@@ -9,6 +9,7 @@ model_lights <- lm(Appliances~T1+T2+T3+T4+T5+T6+T7+T8+T9+RH_1+RH_2+RH_3+RH_4+RH_
 
 print(model_appliances)
 print(model_lights)
+<<<<<<< Updated upstream
 
 complete_data <- read.csv("energydata_complete.csv")
 vars <- data.frame(
@@ -42,3 +43,5 @@ vars <- data.frame(
 )
 
 write.csv(vars,"vars.csv", row.names = FALSE)
+=======
+>>>>>>> Stashed changes
