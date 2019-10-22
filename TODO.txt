@@ -1,0 +1,6 @@
+TO DO:
+
+1. Informacja o czasie pomiaru - najlepiej w sekundach (bądź minutach - pomiary co 10 min) od północy. Jest duża korelacja pomiędzy czasem pomiaru a zużyciem energii.
+
+2. Dokumentacja kodu - Roxygen,
+

@@ -7,7 +7,7 @@ training_data <- read.csv("training.csv")
 
 # creating model
 model_appliances <- lm(Appliances~T1+T2+T3+T4+T5+T6+T7+T8+T9+RH_1+RH_2+RH_3+RH_4+RH_5+RH_6+RH_7+RH_8+RH_9+T_out+Press_mm_hg+Windspeed+Visibility+Tdewpoint+rv1+rv2, data = training_data)
-model_lights <- lm(lights~T_out+Press_mm_hg+Windspeed+Visibility+Tdewpoint, data = training_data)
+model_lights <- lm(lights~T_out+Press_mm_hg+Windspeed+Visibility, data = training_data)
 
 # printing model's coefs 
 print(model_appliances)
@@ -46,9 +46,9 @@ vars <- data.frame(
 )
 
 # converting into matrix
-inputs <- data.matrix(vars[,21:25])
+inputs <- data.matrix(vars[,21:24])
 
-coefs <- t(coef(model_lights)[2:6])
+coefs <- t(coef(model_lights)[2:5])
 a <- coef(model_lights)[1]
 
 results <- matrix(0,19735,1)
