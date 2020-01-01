@@ -14,3 +14,5 @@ https://www.wiley.com//legacy/wileychi/cichosz/Rcode_snippet.html?type=Supplemen
 Typical installation of packages: </br>
 install.packages("Z:/Download/Packages/dmr.util_1.0.tar.gz", repos = NULL, type = "source")
 
+Regression Trees Tutorial: </br>
+https://uc-r.github.io/regression_trees
