@@ -2,8 +2,9 @@
 # linear and reg_trees
 #test data -> no min_hour on 91-102 rows, why ?!?!?
 
-#debug breakpoint at 62
 #hours[91:102] are N/A, in complete_data[91:102] and test_data[91:102] are OK, why ?!?!?
+
+#strtoi read '08' and '09' as 'N/A'
 
 
 library(rsample)     # data splitting 
@@ -21,10 +22,10 @@ training_data <- read.csv("training.csv")
 # REDUNDANT - data organization
 complete_data <- read.csv("energydata_complete.csv")
 
-month = strtoi(as.vector(substring(complete_data$date,6,7)))
-day = strtoi(as.vector(substring(complete_data$date,9,10)))
-hours = strtoi(as.vector(substring(complete_data$date,12,13)))
-minutes = strtoi(as.vector(substring(complete_data$date,15,16)))
+month = as.numeric(substring(complete_data$date,6,7))
+day = as.numeric(substring(complete_data$date,9,10))
+hours = as.numeric(substring(complete_data$date,12,13))
+minutes = as.numeric(substring(complete_data$date,15,16))
 day_mon = day + 30 * month
 min_hour = minutes + 60 * hours
 
