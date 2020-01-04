@@ -1,11 +1,6 @@
 # main v1.1
 # linear and reg_trees
-#test data -> no min_hour on 91-102 rows, why ?!?!?
-
-#hours[91:102] are N/A, in complete_data[91:102] and test_data[91:102] are OK, why ?!?!?
-
-#strtoi read '08' and '09' as 'N/A'
-
+# large RMSE, possible to reduce??
 
 library(rsample)     # data splitting 
 library(dplyr)       # data wrangling
@@ -19,7 +14,7 @@ rm(list = ls())
 
 training_data <- read.csv("training.csv")
 
-# REDUNDANT - data organization
+# data organization
 complete_data <- read.csv("energydata_complete.csv")
 
 month = as.numeric(substring(complete_data$date,6,7))
@@ -63,15 +58,15 @@ test_data <- data.frame(
   rv2 = complete_data$rv2
 )
 
-month = strtoi(as.vector(substring(training_data$date,6,7)))
-day = strtoi(as.vector(substring(training_data$date,9,10)))
-hours = strtoi(as.vector(substring(training_data$date,12,13)))
-minutes = strtoi(as.vector(substring(training_data$date,15,16)))
+month = as.numeric(substring(training_data$date,6,7))
+day = as.numeric(substring(training_data$date,9,10))
+hours = as.numeric(substring(training_data$date,12,13))
+minutes = as.numeric(substring(training_data$date,15,16))
 
 day_mon = day + 30 * month
 min_hour = minutes + 60 * hours
 
-vars_train <- data.frame(
+vars_train <- data.frame( 
   Appliances = training_data$Appliances,
   month = substring(training_data$date,6,7),
   day = substring(training_data$date,9,10),
@@ -108,7 +103,7 @@ vars_train <- data.frame(
 
 # creating linear model
 model_linear_app <- lm(
-  formula = Appliances~day_mon+min_hour+T_out+Press_mm_hg+Windspeed+Visibility,
+  formula = Appliances~day_mon+min_hour+T_out+Press_mm_hg+Windspeed+Visibility+Tdewpoint+rv1+rv2,
   data = vars_train
 )
 
@@ -117,7 +112,7 @@ print(model_linear_app)
 
 # regression trees
 m_nobagging <- rpart(
-  formula = Appliances~day_mon+min_hour+T1+T2+T3+T4+T5+T6+T7+T8+T9+RH_1+RH_2+RH_3+RH_4+RH_5+RH_6+RH_7+RH_8+RH_9+T_out+Press_mm_hg+Windspeed+Visibility+Tdewpoint+rv1+rv2,
+  formula = Appliances~day_mon+min_hour+T_out+Press_mm_hg+Windspeed+Visibility+Tdewpoint+rv1+rv2,
   data = vars_train,
   method = "anova",
   control = list( xval=5)
@@ -129,17 +124,31 @@ set.seed(123)
 
 # train bagged model
 bagged_m1 <- bagging(
-  formula = Appliances~day_mon+min_hour+T1+T2+T3+T4+T5+T6+T7+T8+T9+RH_1+RH_2+RH_3+RH_4+RH_5+RH_6+RH_7+RH_8+RH_9+T_out+Press_mm_hg+Windspeed+Visibility+Tdewpoint+rv1+rv2,
+  formula = Appliances~day_mon+min_hour+T_out+Press_mm_hg+Windspeed+Visibility+Tdewpoint+rv1+rv2,
   data = vars_train,
   coob = TRUE
+)
+
+# BAGGING caret
+
+ctrl <- trainControl(method = "cv", number = 10)
+
+bagged_caret_m1 <- train(
+  Appliances~day_mon+min_hour+T_out+Press_mm_hg+Windspeed+Visibility+Tdewpoint+rv1+rv2,
+  data = vars_train,
+  method = "treebag",
+  trControl = ctrl,
+  importance = TRUE
 )
 
 # predicting from test data
 pred_linear <- predict(model_linear_app,test_data)
 pred_nobagging <- predict(m_nobagging,test_data)
 pred_bagged <- predict(bagged_m1,test_data)
+pred_caret <- predict(bagged_caret_m1,test_data)
 
 #evaluating RMSE for each model
 rmse_linear <- rmse(actual=complete_data$Appliances,predicted=pred_linear)
 rmse_nobagging <- rmse(actual=complete_data$Appliances,predicted=pred_nobagging)
 rmse_bagged <- rmse(actual=complete_data$Appliances,predicted=pred_bagged)
+rmse_caret <- rmse(actual=complete_data$Appliances,predicted=pred_caret)
