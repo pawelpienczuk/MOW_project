@@ -5,5 +5,3 @@ TO DO:
 2. Słabe rezultaty - zwłaszcza przy wykorzystaniu piecewise linear regression
 
 3. Inne parametry błędu - rae etc.
-
-
