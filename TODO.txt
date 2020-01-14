@@ -1,14 +1,20 @@
 TO DO:
 
-1. Dokumentacja kodu - Roxygen,
+nie wiem czy nie brać danych z energydata_complete.csv z pominięciem training.csv - tak na pewno będzie robione w procedurach oceny
+%>% 
+1. Selekcja atrybutóW - tak aby usunąć niepotrzebne atrybuty
+randomForest - szczegóły README git %>% 
 
-2. Słabe rezultaty - zwłaszcza przy wykorzystaniu piecewise linear regression
-  a. pobawić się parametrami rparta (minsplit, cp, etc.) - zapisać wyniki do sprawka  
-  b. wykorzystać randomForest lub xgboost
-
-3. Procedury oceny
+2. Procedury oceny - aby móc oceniać algorytmy - same miary jakości nie wystarczą
 k-CV, holdout, bootstrap
 szczegóły http://elektron.elka.pw.edu.pl/~pcichosz/mow/wyklad/mow-w7.pdf
 
-4. Selekcja atrybutóW
-randomForest - szczegóły README git
+3. KRZYCHU COŚ SPECJALNIE DLA CIEBIE
+Bo ja np. mam wolnego kompa, ale 3 wątki wolne
+https://www.r-bloggers.com/how-to-go-parallel-in-r-basics-tips/
+
+4. Słabe rezultaty - zwłaszcza przy wykorzystaniu piecewise linear regression
+  a. pobawić się parametrami rparta (minsplit, cp, etc.) - zapisać wyniki do sprawka  
+  b. wykorzystać randomForest lub xgboost
+  
+5. Dokumentacja kodu - Roxygen,

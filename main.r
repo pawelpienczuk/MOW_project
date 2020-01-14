@@ -105,6 +105,12 @@ vars_train <- data.frame(
   rv2 = training_data$rv2
 )
 
+# FEATURE SELECTION GOES HERE
+
+#TODO
+
+# CREATING MODELS GOES HERE
+
 # creating linear model
 model_linear_app <- lm(
   formula = Appliances~day_mon+min_hour+T1+T2+T3+T4+T5+T6+T7+T8+T9+RH_1+RH_2+RH_3+RH_4+RH_5+RH_6+RH_7+RH_8+RH_9+RH_out+T_out+Press_mm_hg+Windspeed+Visibility+Tdewpoint+rv1+rv2,
@@ -159,6 +165,9 @@ pred_nobagging <- predict(m_nobagging,test_data)
 pred_bagged <- predict(bagged_m1,test_data)
 pred_caret <- predict(bagged_caret_m1,test_data)
 pred_plr <- predict(plr_tree,test_data,5)
+
+
+#evaluting procedures goes here
 
 #evaluating RMSE for each model
 rmse_linear <- rmse(actual=complete_data$Appliances,predicted=pred_linear)
