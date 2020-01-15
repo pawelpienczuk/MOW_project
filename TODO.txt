@@ -1,7 +1,7 @@
 TO DO:
 
 nie wiem czy nie brać danych z energydata_complete.csv z pominięciem training.csv - tak na pewno będzie robione w procedurach oceny
-%>% 
+
 1. Selekcja atrybutóW - tak aby usunąć niepotrzebne atrybuty
 randomForest - szczegóły README git %>% 
 
