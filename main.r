@@ -20,20 +20,20 @@ source('data_org.R', echo=TRUE)
 
 # FEATURE SELECTION GOES HERE
 
-#TODO
+source('feature_selection.R', echo=TRUE)
 
 # CREATING MODELS GOES HERE
 
-source('creating_models.R', echo=TRUE)
+# source('creating_models.R', echo=TRUE)
 
 # predicting from test data
-pred_linear <- predict(model_linear_app,test_data)
-pred_nobagging <- predict(m_nobagging,test_data)
-pred_bagged <- predict(bagged_m1,test_data)
-pred_caret <- predict(bagged_caret_m1,test_data)
-pred_plr <- predict(plr_tree,test_data,5)
+# pred_linear <- predict(model_linear_app,test_data)
+# pred_nobagging <- predict(m_nobagging,test_data)
+# pred_bagged <- predict(bagged_m1,test_data)
+# pred_caret <- predict(bagged_caret_m1,test_data)
+# pred_plr <- predict(plr_tree,test_data,5)
 
 #evaluting procedures goes here
 
-source('evaluating_models.R', echo=TRUE)
+# source('evaluating_models.R', echo=TRUE)
 

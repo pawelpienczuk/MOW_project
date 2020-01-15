@@ -42,6 +42,3 @@ cor_nobagging <- cor(complete_data$Appliances,pred_nobagging,method='pearson')
 cor_bagged <- cor(complete_data$Appliances,pred_bagged,method='pearson')
 cor_caret <- cor(complete_data$Appliances,pred_caret,method='pearson')
 cor_plr <- cor(complete_data$Appliances,pred_plr,method='pearson')
-
-# plotting most important parameters
-plot(varImp(bagged_caret_m1), 20)

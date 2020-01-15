@@ -12,6 +12,7 @@ day_mon = day + 30 * month
 min_hour = minutes + 60 * hours
 
 test_data <- data.frame(
+  Appliances = complete_data$Appliances,
   month = substring(complete_data$date,6,7),
   day = substring(complete_data$date,9,10),
   hours = substring(complete_data$date,12,13),
