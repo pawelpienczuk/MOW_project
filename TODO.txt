@@ -5,12 +5,12 @@ nie wiem czy nie brać danych z energydata_complete.csv z pominięciem training.
 1. Selekcja atrybutóW - tak aby usunąć niepotrzebne atrybuty
 randomForest - szczegóły README git %>% 
 w feature_selection.R jest już stworzony ranking
-16 najbardziej istotnych atrybutów trzeba wrzucić do oceny
-
 
 2. Procedury oceny - aby móc oceniać algorytmy - same miary jakości nie wystarczą
 k-CV, holdout, bootstrap
 szczegóły http://elektron.elka.pw.edu.pl/~pcichosz/mow/wyklad/mow-w7.pdf
+Zrobione:
+k-CV dla rpart i lm
 
 3. KRZYCHU COŚ SPECJALNIE DLA CIEBIE
 Bo ja np. mam wolnego kompa, ale 3 wątki wolne
