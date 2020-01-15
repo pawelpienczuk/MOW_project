@@ -2,3 +2,6 @@
 .Rhistory
 .RData
 .Ruserdata
+energydata_complete.csv
+training.csv
+vars.csv

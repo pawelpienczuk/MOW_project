@@ -1,14 +1,39 @@
-# main v1.0
-# main functionality
+# main v1.1
+# linear and reg_trees
+# large RMSE, possible to reduce??'
+# poor piecewise linear regression
+
+library(rsample)     # data splitting 
+library(dplyr)       # data wrangling
+library(rpart)       # performing regression trees
+library(rpart.plot)  # plotting regression trees
+library(ipred)       # bagging
+library(caret)       # bagging
+library(Metrics)     # RMSE
+library(dmr.regtree)  
 
 rm(list = ls())
 
-training_data <- read.csv("training.csv")
 
-# creating model
-model_appliances <- lm(Appliances~T1+T2+T3+T4+T5+T6+T7+T8+T9+RH_1+RH_2+RH_3+RH_4+RH_5+RH_6+RH_7+RH_8+RH_9+T_out+Press_mm_hg+Windspeed+Visibility+Tdewpoint+rv1+rv2, data = training_data)
-model_lights <- lm(Appliances~T1+T2+T3+T4+T5+T6+T7+T8+T9+RH_1+RH_2+RH_3+RH_4+RH_5+RH_6+RH_7+RH_8+RH_9+T_out+Press_mm_hg+Windspeed+Visibility+Tdewpoint+rv1+rv2, data = training_data)
+# DATA COLLECTION AND ORGANIZATION GOES HERE
 
-# printing model's coefs 
-print(model_appliances)
-print(model_lights)
+source('data_org.R', echo=TRUE)
+
+# FEATURE SELECTION GOES HERE
+
+source('feature_selection.R', echo=TRUE)
+
+# CREATING MODELS GOES HERE
+
+# source('creating_models.R', echo=TRUE)
+
+# predicting from test data
+# pred_linear <- predict(model_linear_app,test_data)
+# pred_nobagging <- predict(m_nobagging,test_data)
+# pred_bagged <- predict(bagged_m1,test_data)
+# pred_caret <- predict(bagged_caret_m1,test_data)
+# pred_plr <- predict(plr_tree,test_data,5)
+
+#evaluting procedures goes here
+
+source('evaluating_models.R', echo=TRUE)
