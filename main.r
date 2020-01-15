@@ -14,6 +14,7 @@ library(dmr.regtree)
 
 rm(list = ls())
 
+
 # DATA COLLECTION AND ORGANIZATION GOES HERE
 
 source('data_org.R', echo=TRUE)
@@ -36,4 +37,3 @@ source('feature_selection.R', echo=TRUE)
 #evaluting procedures goes here
 
 source('evaluating_models.R', echo=TRUE)
-
