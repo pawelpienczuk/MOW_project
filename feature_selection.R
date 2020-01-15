@@ -17,3 +17,7 @@ varImpPlot(x=full_model_RF,
            n.var=16,
            type=1,
            main="Variable importance")
+
+# passing most important attributes from feature selection
+x <- paste(importance_RF$attr[1:16], collapse = "+")
+x <- paste("Appliances", "~", x)

@@ -35,5 +35,5 @@ source('feature_selection.R', echo=TRUE)
 
 #evaluting procedures goes here
 
-# source('evaluating_models.R', echo=TRUE)
+source('evaluating_models.R', echo=TRUE)
 
