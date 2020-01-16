@@ -6,19 +6,38 @@ library(dmr.claseval)
 
 #EVALUATION FOR RPART
 
-app.cv3 <- crossval(rpart, 
+app.rpart <- crossval(rpart, 
                     as.formula(x), 
                     test_data, 
-                    k=100)
-rankMSE.rpart <- mse(app.cv3$pred, app.cv3$true)
+                    k=10)
+rankMSE.rpart <- mse(app.rpart$pred, app.rpart$true)
+rankRRSE.rpart <- rrse(app.rpart$pred, app.rpart$true)
+rankMAE.rpart <- mae(app.rpart$pred, app.rpart$true)
+rankRMSE.rpart <- rmse(app.rpart$pred, app.rpart$true)
+rankRAE.rpart <- rae(app.rpart$pred, app.rpart$true)
+rankCOR.rpart <- cor(app.rpart$pred, app.rpart$true, method='pearson')
 
 #EVALUATION FOR lm
 
-app.cv3 <- crossval(lm, 
+app.lm <- crossval(lm, 
                     as.formula(x), 
                     test_data, 
-                    k=100)
-rankMSE.lm <- mse(app.cv3$pred, app.cv3$true)
+                    k=10)
+rankMSE.lm <- mse(app.cv3$pred, app.lm$true)
+rankRRSE.lm <- rrse(app.lm$pred, app.lm$true)
+rankMAE.lm <- mae(app.lm$pred, app.lm$true)
+rankRMSE.lm <- rmse(app.lm$pred, app.lm$true)
+rankRAE.lm <- rae(app.lm$pred, app.lm$true)
+rankCOR.lm <- cor(app.lm$pred, app.lm$true, method='pearson')
+
+#EVALUTING FOR BAGGING
+
+app.bag <- crossval(bagging, 
+                      as.formula(x), 
+                      test_data, 
+                      k=10)
+rankMSE.bag <- mse(app.cv4$pred, app.cv4$true)
+
 
 #EVALUATION FOR other algorithms
 
