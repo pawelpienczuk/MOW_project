@@ -2,9 +2,8 @@ TO DO:
 
 nie wiem czy nie brać danych z energydata_complete.csv z pominięciem training.csv - tak na pewno będzie robione w procedurach oceny
 
-1. Selekcja atrybutóW - tak aby usunąć niepotrzebne atrybuty
-randomForest - szczegóły README git %>% 
-w feature_selection.R jest już stworzony ranking
+1. FEATURE sELECTION - wygląda na to, że wybór za pomocą miary jakości importance jest niezbyt trafny.
+w tym celu najlepiej by było wykorzystać bootstrap i na podstawie DOBREJ miary jakości, np. współczynnika determinacji (r2 - jego kod jest już w feature_selection.R) dokonać wyboru atrybutów.
 
 2. Procedury oceny - aby móc oceniać algorytmy - same miary jakości nie wystarczą
 k-CV, holdout, bootstrap
@@ -12,12 +11,19 @@ szczegóły http://elektron.elka.pw.edu.pl/~pcichosz/mow/wyklad/mow-w7.pdf
 Zrobione:
 k-CV dla rpart i lm
 
-3. KRZYCHU COŚ SPECJALNIE DLA CIEBIE
+DMR book -> rozdział 10.3.5. / strona 307 -> podobno k-CV najlepsze, 
+leave one out tylko dla małych zbiorów
+hold-out dla bardzo dużych zbiorów
+bootstrap 0.632 też powinien być ok
+
+
+3. Dokumentacja kodu - Roxygen,
+
+4. KRZYCHU COŚ SPECJALNIE DLA CIEBIE
 Bo ja np. mam wolnego kompa, ale 3 wątki wolne
 https://www.r-bloggers.com/how-to-go-parallel-in-r-basics-tips/
 
-4. Słabe rezultaty - zwłaszcza przy wykorzystaniu piecewise linear regression
+5. Słabe rezultaty - zwłaszcza przy wykorzystaniu piecewise linear regression
   a. pobawić się parametrami rparta (minsplit, cp, etc.) - zapisać wyniki do sprawka  
   b. wykorzystać randomForest lub xgboost
   
-5. Dokumentacja kodu - Roxygen,

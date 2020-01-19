@@ -47,6 +47,8 @@ test_data <- data.frame(
   rv2 = complete_data$rv2
 )
 
+test_data <- test_data[1:1000,]
+
 month = as.numeric(substring(training_data$date,6,7))
 day = as.numeric(substring(training_data$date,9,10))
 hours = as.numeric(substring(training_data$date,12,13))

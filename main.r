@@ -2,6 +2,7 @@
 # linear and reg_trees
 # large RMSE, possible to reduce??'
 # poor piecewise linear regression
+setwd("E:/Documents/Studies/MOW/MOW_project")
 
 library(rsample)     # data splitting 
 library(dplyr)       # data wrangling
@@ -13,7 +14,6 @@ library(Metrics)     # RMSE
 library(dmr.regtree)  
 
 rm(list = ls())
-
 
 # DATA COLLECTION AND ORGANIZATION GOES HERE
 
