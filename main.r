@@ -2,7 +2,8 @@
 # linear and reg_trees
 # large RMSE, possible to reduce??'
 # poor piecewise linear regression
-setwd("E:/Documents/Studies/MOW/MOW_project")
+#setwd("E:/Documents/Studies/MOW/MOW_project")
+setwd("Z:/Offtop/MOW/Project/MOW_project")
 
 library(rsample)     # data splitting 
 library(dplyr)       # data wrangling
