@@ -2,8 +2,8 @@
 # linear and reg_trees
 # large RMSE, possible to reduce??'
 # poor piecewise linear regression
-#setwd("E:/Documents/Studies/MOW/MOW_project")
-setwd("Z:/Offtop/MOW/Project/MOW_project")
+setwd("E:/Documents/Studies/MOW/MOW_project")
+#setwd("Z:/Offtop/MOW/Project/MOW_project")
 
 library(rsample)     # data splitting 
 library(dplyr)       # data wrangling
@@ -37,4 +37,12 @@ source('feature_selection.R', echo=TRUE)
 
 #evaluting procedures goes here
 
-source('evaluating_models.R', echo=TRUE)
+#source('evaluating_models.R', echo=TRUE)
+
+source("model_eval.R")
+
+tempdataframe <- model_eval(test_data = test_data,
+                            fun = rpart,
+                            attr = attr_part,
+                            crossval_number = 10
+                            )
