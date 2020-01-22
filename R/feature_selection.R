@@ -1,6 +1,9 @@
 # feature_selection.R
 
 library(randomForest)
+library(rpart)
+library(rpart.plot)  # plotting regression trees
+library(Metrics)     # RMSE
 regression <- TRUE
 
 print("FEATURE SELECTION")

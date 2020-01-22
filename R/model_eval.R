@@ -12,7 +12,6 @@ library(dmr.claseval)
 #' @return number
 #' @export 
 #'
-#' @examples
 model_eval <- function(test_data,fun,attr,crossval_number){
   temp_model <- crossval(fun, 
                         as.formula(attr), 
