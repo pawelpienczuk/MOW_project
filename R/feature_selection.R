@@ -18,6 +18,19 @@ library(Metrics)     # RMSE
 #' 
 feature_selection <<- function(test_data,type,part,trees_num){
   
+  if ( !is.data.frame(test_data) ){
+    message("Pass data frame format")
+    stop()
+  }
+  if (trees_num<1) {
+    message("Trees number should be >= 1")
+    stop()
+  }
+  if (part>1|part<=0){
+    message("Parts of atrributes must be >0 and <=1")
+    stop()  
+  }
+  
   print("FEATURE SELECTION")
   count <- ceiling((ncol(test_data)-1)*part)
   
@@ -112,5 +125,9 @@ feature_selection <<- function(test_data,type,part,trees_num){
     
     out <- data.frame(attr_part,wyniki)
     return(out)
+  }
+  else{
+    message("Wrong type of feature selection: \"bootstrap\" or \"rf\" ")
+    stop()
   }
 }
