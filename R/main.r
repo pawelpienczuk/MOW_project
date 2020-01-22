@@ -22,9 +22,9 @@ source('R/data_org.R', echo=TRUE)
 source('R/feature_selection.R')
 
 res <- feature_selection(test_data = test_data,
-                               type = "bootstrap",
+                               type = "rf",
                                part = 0.5,
-                               trees_num=10)
+                               trees_num=500)
 
 # CREATING MODELS GOES HERE
 

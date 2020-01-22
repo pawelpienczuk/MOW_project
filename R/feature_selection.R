@@ -27,7 +27,7 @@ feature_selection <<- function(test_data,type,part,trees_num){
                         importance = TRUE,
                         ntree=trees_num)
     importance_RF <- data.frame(importance(full_model_RF, type=1), "k"=1:(ncol(test_data)-1))
-    importance_RF <- data.frame("importance"=importance_RF[order(importance_RF[,1],decreasing = TRUE),1],
+    wyniki <- data.frame("importance"=importance_RF[order(importance_RF[,1],decreasing = TRUE),1],
                               "k"=importance_RF$k[order(importance_RF[,1],decreasing = TRUE)], 
                               "attr"=rownames(importance_RF)[order(importance_RF[,1], decreasing=TRUE)])
     
@@ -39,9 +39,10 @@ feature_selection <<- function(test_data,type,part,trees_num){
     
     # passing most important attributes from feature selection
     count <- ceiling((ncol(test_data)-1)*part)
-    x <- paste(importance_RF$attr[2:count], collapse = "+")
-    x <- paste("Appliances", "~", x)
-    return(x)
+    attr_part <- paste(wyniki$attr[2:count], collapse = "+")
+    attr_part <- paste("Appliances", "~", attr_part)
+    out <- data.frame(attr_part,wyniki)
+    return(out)
   }
   else if(type=="bootstrap"){
 
