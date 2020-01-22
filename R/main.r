@@ -19,7 +19,12 @@ source('R/data_org.R', echo=TRUE)
 
 # FEATURE SELECTION GOES HERE
 
-source('R/feature_selection.R', echo=TRUE)
+source('R/feature_selection.R')
+
+res <- feature_selection(test_data = test_data,
+                               type = "bootstrap",
+                               part = 0.5,
+                               trees_num=10)
 
 # CREATING MODELS GOES HERE
 
@@ -32,14 +37,21 @@ source('R/feature_selection.R', echo=TRUE)
 # pred_caret <- predict(bagged_caret_m1,test_data)
 # pred_plr <- predict(plr_tree,test_data,5)
 
-#evaluting procedures goes here
-
-#source('evaluating_models.R', echo=TRUE)
-
+#evaluation procedures goes here
 source("R/model_eval.R")
 
 tempdataframe <- model_eval(test_data = test_data,
                             fun = rpart,
-                            attr = attr_part,
+                            attr = as.character(res$attr_part[1]),
                             crossval_number = 10
                             )
+tempdataframe2 <- model_eval(test_data = test_data,
+                             fun = lm,
+                             attr = as.character(res$attr_part[1]),
+                             crossval_number = 10
+                            )
+tempdataframe3 <- model_eval(test_data = test_data,
+                             fun = bagging,
+                             attr = as.character(res$attr_part[1]),
+                             crossval_number = 10
+)

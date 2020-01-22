@@ -16,7 +16,7 @@ model_eval(test_data, fun, attr, crossval_number)
 \item{crossval_number}{}
 }
 \value{
-number
+data frame with measures in following order: MSE, RRSE, MAE, RMSE, RAE, COR, RSE
 }
 \description{
 Model Evaluation

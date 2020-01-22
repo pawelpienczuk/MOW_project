@@ -2,17 +2,17 @@
 
 library(dmr.claseval)
 
-#' Model Evaluation
+#' @title Model Evaluation
 #'
 #' @param test_data 
 #' @param fun 
 #' @param attr 
 #' @param crossval_number 
 #'
-#' @return number
-#' @export 
+#' @return data frame with measures in following order: MSE, RRSE, MAE, RMSE, RAE, COR, RSE
+#' 
 #'
-model_eval <- function(test_data,fun,attr,crossval_number){
+model_eval <<- function(test_data,fun,attr,crossval_number){
   temp_model <- crossval(fun, 
                         as.formula(attr), 
                         test_data, 
