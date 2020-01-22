@@ -1,6 +1,11 @@
 # MOW_project
 
 19Z MOW FEIT WUT Project </br>
+Package type project </br>
+Roxygen skeleton added (<i>model_eval.R</i>) </br>
+Ctrl+Shift+B - install+build </br>
+Ctrl+Shift+D - generate documentation </br>
+Documentation in <i>man</i> directory </br>
 
 <b>R Tutorial:</b> </br>
 https://www.tutorialspoint.com/r/index.htm </br>
