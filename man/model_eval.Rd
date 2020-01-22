@@ -4,16 +4,18 @@
 \alias{model_eval}
 \title{Model Evaluation}
 \usage{
-model_eval(test_data, fun, attr, crossval_number)
+model_eval(test_data, fun = rpart, formula, crossval_number = 10, args = NULL)
 }
 \arguments{
-\item{test_data}{}
+\item{test_data}{- data to perform cross-validation}
 
-\item{fun}{}
+\item{fun}{- regression algorithm (e.g. train,bagging,lm) default=rpart}
 
-\item{attr}{}
+\item{formula}{- regression formula}
 
-\item{crossval_number}{}
+\item{crossval_number}{- number of cross-validations, default=10}
+
+\item{args}{- passed arguments into regression algorithm, default=NULL}
 }
 \value{
 data frame with measures in following order: MSE, RRSE, MAE, RMSE, RAE, COR, RSE

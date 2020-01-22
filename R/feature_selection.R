@@ -4,19 +4,23 @@ library(randomForest)
 library(rpart)
 library(rpart.plot)  # plotting regression trees
 library(Metrics)     # RMSE
+library(dmr.disc)
+library(dmr.stats)
 
 #' @title Feature Selection
 #'
-#' @param test_data 
-#' @param type 
-#' @param part 
-#' @param trees_num 
+#' @param test_data  - data to perform feature ranking
+#' @param type - "rf" - randomForest IMPORTANCE-based ranking (MSE)(default),
+#' "bootstrap" - bootstraped R2-based (coef. of determination) ranking
+#' "simple" - simple filter based algorithms
+#' @param part - part of attributes returned by feature selection, 0 < part <=1 (default=0.5)
+#' @param trees_num - numbers of trees (randomForest) or bootstrap sets (bootstrap)
 #'
 #' @return formula with selected attributes
 #' 
 #'
 #' 
-feature_selection <<- function(test_data,type,part,trees_num){
+feature_selection <<- function(test_data,type="rf",part=1,trees_num=10){
   
   if ( !is.data.frame(test_data) ){
     message("Pass data frame format")
@@ -58,13 +62,13 @@ feature_selection <<- function(test_data,type,part,trees_num){
     return(out)
   }
   else if(type=="bootstrap"){
-
+    
     r2 <- function(pred.y, true.y)
-    { 1 - length(true.y)*mse(pred.y, true.y)/((length(true.y)-1)*var(true.y)) }
+    { 1 - length(true.y)*mse(pred.y = pred.y,true.y=true.y)/((length(true.y)-1)*var(true.y)) }
     
     N=trees_num
     
-    wyniki <- data.frame(matrix(0,ncol=3,nrow=(ncol(test_data)-1)))
+    wyniki <- data.frame(matrix(0,ncol=3,nrow=(ncol(test_data)-2)))
     
     # bootstrap
     for (i in 1:N)
@@ -77,15 +81,15 @@ feature_selection <<- function(test_data,type,part,trees_num){
       
       # tworzenie modelu na wszystkich atrybutach
       model <- rpart(formula=Appliances~.,
-                     data=data_test,
+                     data=data_train,
                      method='anova'
-                     )
+      )
       pred_full <- predict(model, data_test)
       
-      quality <- r2(pred.y = pred_full, true.y = test_data$Appliances)
+      quality <- r2(pred.y = pred_full, true.y = data_test$Appliances)
       
       # badanie wplywu permutacji 
-      for (k in 1:(ncol(test_data)-1))
+      for (k in 2:(ncol(test_data)-1))
       {
         # permutacja k-tego atrybutu
         data_test_perm <- data_test
@@ -94,17 +98,8 @@ feature_selection <<- function(test_data,type,part,trees_num){
         # predykcja dla atrybutow o spermutowanych wartosciach
         pred_perm <- predict(model, data_test_perm)
         
-        #zabezpieczenie
-        if (class(pred_perm) == "matrix") 
-        {
-          pred_perm_tmp <- vector()
-          for (m in 1:nrow(pred_perm)) 
-            pred_perm_tmp[m]=levels(test_data$Appliances)[which.max(pred_perm[m,])]
-          pred_perm <- factor(pred_perm_tmp, levels <- levels(data_test$Appliances))
-        }
-        
         quality_perm <- r2(pred.y = pred_perm, true.y = data_test_perm$Appliances)
-    
+        
         quality_diff <- quality - quality_perm
         wyniki_tmp <- rbind(wyniki_tmp, c(quality, quality_perm, quality_diff))
       }
@@ -114,20 +109,35 @@ feature_selection <<- function(test_data,type,part,trees_num){
     
     wyniki <- wyniki/N
     
-    wyniki <- data.frame(1:k, colnames(test_data)[1:k], wyniki[,3])
+    wyniki <- data.frame(2:k, colnames(test_data)[2:k], wyniki[,3])
     wyniki <- wyniki[order(wyniki[,3], decreasing = TRUE),]
     colnames(wyniki) <- c("k", "attr", "R2_diff")
     
     count <- ceiling((ncol(test_data)-1)*part)
-    message('Najwa?aniejsze ', part*100, '% atrybut?w to:\n', paste(wyniki$attr[2:count], ' '), '\n')
+    message('Najwa?aniejsze ', part*100, '% atrybut?w to:\n', paste(wyniki$attr[1:count], ' '), '\n')
     attr_part <- paste(wyniki$attr[2:count], collapse = "+")
     attr_part <- paste("Appliances", "~", attr_part)
     
     out <- data.frame(attr_part,wyniki)
     return(out)
   }
+  
+  else if (type=="simple"){
+    # Symmetric uncertainty - symunc
+    # discnm.eqfreq - equal-frequency discretization 
+    
+    res <- simple.filter(formula = Appliances~.,
+                         data = discnm.eqfreq(~.,test_data,50),
+                         dd=symunc)
+    
+    names_t <- names(res)
+    attr_part <- paste(names_t[1:count], collapse = "+")
+    attr_part <- paste("Appliances", "~", attr_part)
+    out <- data.frame(attr_part,res)
+    return(out)
+  }
   else{
-    message("Wrong type of feature selection: \"bootstrap\" or \"rf\" ")
+    message("Wrong type of feature selection: \"bootstrap\" \"rf\" or \"simple\" ")
     stop()
   }
 }
