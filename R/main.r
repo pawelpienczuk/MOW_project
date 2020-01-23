@@ -1,6 +1,7 @@
 # main v1.1
 #setwd("E:/Documents/Studies/MOW/MOW_project")
 #setwd("Z:/Offtop/MOW/Project/MOW_project")
+setwd("F:/GitHub/MOW_project")
 setwd(".")
 
 library(rsample)     # data splitting 

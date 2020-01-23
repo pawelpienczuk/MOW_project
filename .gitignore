@@ -5,3 +5,7 @@
 energydata_complete.csv
 training.csv
 vars.csv
+Sprawozdanie/*.aux
+Sprawozdanie/*.log
+Sprawozdanie/*.out
+Sprawozdanie/*.synctex.gz

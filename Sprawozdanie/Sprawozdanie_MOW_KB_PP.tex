@@ -1,0 +1,191 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
+%
+% Sprawozdanie MOW
+% TEMAT PROJEKTU: 
+% AUTOR: 	Krzysztof Belewicz
+%			Paweł Pieńczuk
+% 23.01.2020
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[a4paper,11pt,twoside]{mwrep}  %bylo report
+\usepackage[utf8]{inputenc} %ISO-8859-2 
+\usepackage[UKenglish,polish]{babel} 
+\usepackage[T1]{fontenc} 
+\usepackage{mathptmx}
+\usepackage[scaled=.90]{helvet}
+\usepackage{courier}
+\usepackage{gensymb} %\degree
+%\usepackage[pdftex]{graphicx} 
+%\usepackage{pdfpages} 
+%\usepackage{wrapfig}
+%\usepackage{hyperref} 
+%\usepackage{gensymb}
+% tablice
+%\usepackage{ctable}
+%\usepackage{threeparttablex}
+%\usepackage{booktabs}
+% grafiki
+%\usepackage{graphicx}
+%\usepackage{subfig}
+%\usepackage{float}
+%% matematyka i greckie literki w jednostkach
+%\usepackage{amsmath}
+%\usepackage{textgreek}
+%% wstawki pdf
+%\usepackage{pdfpages}
+%% wstawki z kodem 
+%\usepackage{listings}
+%\usepackage{color}
+\usepackage{url}
+\makeatletter
+\g@addto@macro{\UrlBreaks}{\UrlOrds}
+\expandafter\def\expandafter\UrlBreaks\expandafter{\UrlBreaks%  save the current one
+  \do\a\do\b\do\c\do\d\do\e\do\f\do\g\do\h\do\i\do\j%
+  \do\k\do\l\do\m\do\n\do\o\do\p\do\q\do\r\do\s\do\t%
+  \do\u\do\v\do\w\do\x\do\y\do\z\do\A\do\B\do\C\do\D%
+  \do\E\do\F\do\G\do\H\do\I\do\J\do\K\do\L\do\M\do\N%
+  \do\O\do\P\do\Q\do\R\do\S\do\T\do\U\do\V\do\W\do\X%
+  \do\Y\do\Z}
+  
+%\usepackage[paper=A4]{typearea}
+%marginesy 
+\usepackage[ bindingoffset = 0cm, hmargin = 2cm, vmargin = 2cm]{geometry} 
+%interlinia 
+\linespread{1} 
+
+\widowpenalty=10000 % ostatni wierszrkapitu nie zostanie przeniesiony na następną stronę 
+\clubpenalty=10000 % pierwszy wiersz akapitu nie będzie kończył strony (nie używam tego ustawienia)
+\hbadness= 1450 %% zmniejsza liczę wyświetlanych ostrzeżeń (można zwiększyć, ale bez przesady)
+\hfuzz = 0pt %% tekst może sterczeć ma marginesie na 1,5pt (ok. 0,5mm)
+
+\clubpenalty=10000 %nie pozostawia sierot
+\brokenpenalty=10000 %nie dzieli stron je»eli podziaª wyrazu
+\sloppy %zakaz wydªu»ania lini
+
+%wcięcia 
+\setlength{\parindent}{1cm} 
+\setcounter{secnumdepth}{2} %only sections and subsections are numbered 
+\setcounter{tocdepth}{2} %table of contents shows up to three levels 
+
+%\newcommand\tab[1][1cm]{\hspace*{#1}}
+
+\begin{document} 
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%			STRONA TYTUŁOWA
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{titlepage} 
+{\begingroup
+\centering 
+
+\vspace*{15\baselineskip} 
+
+{\Huge Metody Odkrywania Wiedzy}
+\vspace*{1\baselineskip}
+
+{\huge Dokumentacja końcowa projektu}
+
+\vspace*{3\baselineskip}
+{\LARGE „Predykcja zużycia energii na podstawie danych czujnikowych”}
+\\[\baselineskip]
+
+\vspace*{20\baselineskip} 
+{\Large 
+Krzysztof Belewicz\\
+Paweł Pieńczuk\par} 
+
+\vspace*{1\baselineskip}
+\today
+
+\endgroup\clearpage}
+\end{titlepage} 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%   
+% Sprawko właściwe
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%TODO nazwy chapterów ukradzione z elka.mine
+%TODO ciężkie wzorowanie w tym co napisane/ będzie napisane
+\large %trochę cheat na objętość
+
+\begingroup
+\let\clearpage\relax
+\chapter{Opis projektu} %Interpretacja tematu
+
+Celem projektu było wyznaczenie całkowitego zużycia energii dla zadanej chwili czasu, tzn. sumy poborów sprzętów AGD (kolumna ‘Appliances’) i oświetlenia (kolumna ‘Lights’). 
+Zbiór danych został pozyskany z archiwum dostępnego na stronie: 
+{\url{https://archive.ics.uci.edu/ml/datasets/Appliances+energy+prediction}}. Pojęciem docelowym jest wartość całkowitej pobieranej mocy przez gospodarstwo domowe.
+
+TODO
+%TODO jaki to rodzaj problemu+opis
+
+\endgroup
+
+
+\begingroup
+\let\clearpage\relax
+\chapter{Opis danych}
+
+\section{Charakterystyka danych}
+
+Dane wykorzystywane do eksperymentów zostały zebrane za pomocą sieci czujników w niewielkim domu w czasie 4.5 miesiąca. 
+Składają się z:
+\begin{itemize}
+\item[$\bullet$] daty i godziny pomiaru,
+\item[$\bullet$] poboru energii sprzętów domowych [$Wh$],
+\item[$\bullet$] poboru energii oświetlenia [$Wh$],
+\item[$\bullet$] pomiarów temperatury i wilgotności dla 8 różnych pomieszczeń ([\degree $C$], [$\%$]),
+\item[$\bullet$] pomiarów temperatury i wilgotności dla zewnętrznej, północnej strony budynku ([\degree $C$], [$\%$]),
+\item[$\bullet$] danych z pobliskiej stacji pogodowej:
+	\begin{itemize}
+	\item[$\circ$] temperatura powietrza [\degree $C$],
+	\item[$\circ$] temperatura punktu rosy [\degree $C$],
+	\item[$\circ$] ciśnienie atmosferyczne [$mm~Hg$],
+	\item[$\circ$] wilgotność [$\%$],
+	\item[$\circ$] prędkość wiatru [$m/s$],
+	\item[$\circ$] widoczność [$km$].
+	\end{itemize}
+\end{itemize}
+
+\section{Przygotowanie danych}
+Każdy pomiar został uśredniony z 3 próbek wykonanych w równych odstępach co ok. 3,3 min. W ramach przygotowania danych, data i godzina pomiaru zostaną rozdzielone na dwie oddzielne kolumny -- ułatwi to późniejsze operacje na danych.
+\endgroup
+
+
+%\pagebreak
+\clearpage
+
+\begingroup
+\let\clearpage\relax
+\chapter{Opis algorytmów}
+
+TODO\\
+%TODO pakiety R i parametry ~notatka z poprzedniego sprawka
+%TODO miara jakości, ocena modeli, procedura oceny
+
+\endgroup
+
+
+
+\begingroup
+\let\clearpage\relax
+\chapter{Selekcja atrybutów}
+TODO\\
+\endgroup
+
+
+%\begin{figure}[H]%
+%    \centering
+%    \subfloat{{
+%    	\includegraphics[width=.8\linewidth]{grafika/P1/LTSpice-amp.png}
+%    }}%
+%    %\caption{Wykres chara}%
+%    \label{AC_Spice_Amp}%
+%\end{figure}
+
+
+\end{document}
