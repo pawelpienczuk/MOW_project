@@ -9,16 +9,16 @@ simple.filter(formula, data, dd = dd.chi2, cd = cd.kruskal, cc = cc.spearman)
 \arguments{
 \item{formula}{}
 
-\item{data}{}
+\item{data}{data to perform feature selection}
 
-\item{dd}{}
+\item{dd}{test to perform selection with discrete attributes and discrete target}
 
-\item{cd}{}
+\item{cd}{test to perform selection with continuous attributes and discrete target}
 
-\item{cc}{}
+\item{cc}{test to perform selection with continuous attributes and discrete target}
 }
 \value{
-
+named by attribute list of test measures
 }
 \description{
 Simple attribute filter

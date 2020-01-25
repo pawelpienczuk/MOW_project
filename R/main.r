@@ -18,13 +18,16 @@ source('R/data_org.R', echo=TRUE)
 # FEATURE SELECTION GOES HERE
 
 source('R/feature_selection.R')
-source('R/simple.filter.R')
 
-res <- feature_selection(test_data = test_data,
-                               type = "rf",
-                               part = 0.25,
-                               trees_num=20)
+res <- feature_selection(formula_full = Appliances~.,
+                          target = "Appliances",
+                          test_data = test_data,
+                          type = "relief",
+                          part = 0.5,
+                          trees_num=100
+                          )
 
+formula <- as.vector(res$attr_part[1])
 # CREATING MODELS GOES HERE
 
 # EVALUATION PROCEDURES GOES HERE
@@ -36,22 +39,22 @@ args_t <- c(method="treebag",trControl=ctrl)
 
 tempdataframe <- model_eval(test_data = test_data,
                             fun = rpart,
-                            formula = as.character(res$attr_part[1]),
-                            crossval_number = 10
+                            formula = formula,
+                            crossval_number = 20
                             )
 tempdataframe2 <- model_eval(test_data = test_data,
                              fun = lm,
-                             formula = as.character(res$attr_part[1]),
-                             crossval_number = 10
+                             formula = formula,
+                             crossval_number = 20
                             )
 tempdataframe3 <- model_eval(test_data = test_data,
                              fun = bagging,
-                             formula = as.character(res$attr_part[1]),
-                             crossval_number = 10
+                             formula = formula,
+                             crossval_number = 20
 )
-tempdataframe4 <- model_eval(test_data = test_data,
-                             fun = train,
-                             formula = as.character(res$attr_part[1]),
-                             crossval_number = 10,
-                             args=args_t
-)
+# tempdataframe4 <- model_eval(test_data = test_data,
+#                              fun = train,
+#                              formula = formula,
+#                              crossval_number = 20,
+#                              args=args_t
+# )

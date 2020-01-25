@@ -9,14 +9,12 @@ cc.spearman <- function(a1, a2) 1-cor.test(a1, a2, method="spearman")$p.value
 #' @title Simple attribute filter
 #'
 #' @param formula 
-#' @param data 
-#' @param dd 
-#' @param cd 
-#' @param cc 
+#' @param data data to perform feature selection
+#' @param dd test to perform selection with discrete attributes and discrete target
+#' @param cd test to perform selection with continuous attributes and discrete target
+#' @param cc test to perform selection with continuous attributes and discrete target
 #'
-#' @return
-#' 
-#'
+#' @return named by attribute list of test measures
 #' 
 simple.filter <- function(formula, data, dd=dd.chi2, cd=cd.kruskal, cc=cc.spearman)
 {

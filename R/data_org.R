@@ -13,10 +13,10 @@ min_hour = minutes + 60 * hours
 
 test_data <- data.frame(
   Appliances = complete_data$Appliances,
-  month = substring(complete_data$date,6,7),
-  day = substring(complete_data$date,9,10),
-  hours = substring(complete_data$date,12,13),
-  minutes = substring(complete_data$date,15,16),
+  month = as.numeric(substring(complete_data$date,6,7)),
+  day = as.numeric(substring(complete_data$date,9,10)),
+  hours = as.numeric(substring(complete_data$date,12,13)),
+  minutes = as.numeric(substring(complete_data$date,15,16)),
   day_mon = day_mon,
   min_hour = min_hour,
   T1 = complete_data$T1,
