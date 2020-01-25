@@ -26,18 +26,19 @@
 %\usepackage{threeparttablex}
 %\usepackage{booktabs}
 % grafiki
-%\usepackage{graphicx}
-%\usepackage{subfig}
-%\usepackage{float}
+\usepackage{graphicx}
+\usepackage{subfig}
+\usepackage{float}
 %% matematyka i greckie literki w jednostkach
-%\usepackage{amsmath}
-%\usepackage{textgreek}
+\usepackage{amsmath}
+\usepackage{textgreek}
 %% wstawki pdf
 %\usepackage{pdfpages}
-%% wstawki z kodem 
-%\usepackage{listings}
-%\usepackage{color}
+% wstawki z kodem 
+\usepackage{listings}
+\usepackage{color}
 \usepackage{url}
+% Linki
 \makeatletter
 \g@addto@macro{\UrlBreaks}{\UrlOrds}
 \expandafter\def\expandafter\UrlBreaks\expandafter{\UrlBreaks%  save the current one
@@ -152,7 +153,7 @@ Składają się z:
 \end{itemize}
 
 \section{Przygotowanie danych}
-Każdy pomiar został uśredniony z 3 próbek wykonanych w równych odstępach co ok. 3,3 min. W ramach przygotowania danych, data i godzina pomiaru zostaną rozdzielone na dwie oddzielne kolumny -- ułatwi to późniejsze operacje na danych.
+Każdy pomiar został uśredniony z 3 próbek wykonanych w równych odstępach co ok. 3,3 min. W ramach przygotowania danych, data i godzina pomiaru zostały rozdzielone na dwie oddzielne kolumny -- ułatwi to późniejsze operacje na danych.
 \endgroup
 
 
@@ -163,9 +164,23 @@ Każdy pomiar został uśredniony z 3 próbek wykonanych w równych odstępach c
 \let\clearpage\relax
 \chapter{Opis algorytmów}
 
-TODO\\
-%TODO pakiety R i parametry ~notatka z poprzedniego sprawka
-%TODO miara jakości, ocena modeli, procedura oceny
+
+TODO - ten chapter jest imo zawarty w 'konstrukcji i ocenie modeli'\\
+ergo można usunąć, grafikę przenieść tam.\\
+(chapter jest tutaj bo skopiowałem sprawko wstępne)\\
+(grafika nie wiem czemu tutaj jest, tak wyszło)\\
+
+\begin{figure}[H]%
+    \centering
+    \subfloat{{
+    	\includegraphics[page=1,
+				width=0.8\linewidth,
+				origin=c	
+		]{../Rplots.pdf}
+    }}%
+    %\caption{TODO caption}%
+    \label{FIG_1}%
+\end{figure}
 
 \endgroup
 
@@ -174,18 +189,117 @@ TODO\\
 \begingroup
 \let\clearpage\relax
 \chapter{Selekcja atrybutów}
-TODO\\
+
+TODO jakoś ładnie opisać, to co niżej raczej dla inspiracji\\
+
+%TODO zajebane z elka.mine
+Algorytm randomForest pozwala uszeregować atrybuty na dwa sposoby:
+\begin{itemize}
+\item[$\bullet$] przydatność atrybutu oceniania jest względem tego, jak bardzo model pogorszy się gdy tego atrybutu zabraknie,
+\item[$\bullet$] przydatność atrybutu określa zmniejszenie nieczystości po podziale w oparciu o ten atrybut.
+\end{itemize}
+Została wybrana pierwsza metoda ze względu na jej widoczny i bezpośredni związek z jakością całego modelu.
+
+%TODO zajebane z twojego readme z gita
+Najprostszym, zadowalającym rozwiązaniem jest zastosowanie pakietu randomForest w celu wyznaczenia predykcyjnej przydatności atrybutów, a następnie wybór (może w kilku wariantach) pewnej liczby najlepszych atrybutów (np. najlepsze 25\%, 50\% itp.). W tym przypadku zalecałbym użycie miary "mean decrease accuracy", co wymaga użycia w wywołaniu funkcji randomForest argumentu importance=TRUE, zaś w wywołaniu funkcji importance lub varImpPlot argumentu type=1. Inne bardziej zautomatyzowane podejścia można znaleźć w kilku pakietach wymienionych tutaj: {\url{https://github.com/FrancisArgnR/R-FeatureSelection-Packages}}
+
+\section{Wyniki selekcji atrybutów}
+TODO jakaś tabelka albo co + ew wnioski\\
+
 \endgroup
 
 
-%\begin{figure}[H]%
-%    \centering
-%    \subfloat{{
-%    	\includegraphics[width=.8\linewidth]{grafika/P1/LTSpice-amp.png}
-%    }}%
-%    %\caption{Wykres chara}%
-%    \label{AC_Spice_Amp}%
-%\end{figure}
 
+\begingroup
+\let\clearpage\relax
+\chapter{Konstrukcja i ocena modeli}
+
+\section{Metody konstrukcji modeli}
+Pojedyncze modele drzew regresji zazwyczaj cierpią z powodu wysokiej wariancji -- jedną z metod jej redukcji jest tzw. Bagging (\textbf{B}ootstrap \textbf{agg}regat\textbf{ing}). 
+Metoda ta polega na łączeniu i uśrednianiu wielu modeli drzew, co  zmniejsza wariancję i redukuje zbytnie dopasowanie.
+%TODO dokładniejszy opis działania bo wydaje się mało
+%Create m bootstrap samples from the training data. Bootstrapped samples allow us to create many slightly different data sets but with the same distribution as the overall training set.
+%For each bootstrap sample train a single, unpruned regression tree.
+%Average individual predictions from each tree to create an overall average predicted value.
+
+Bagging może zostać zrealizowany za pomocą pakietu
+\textit{ipred} 
+lub
+\textit{caret}. 
+\textit{Ipred} jest z reguły prostszy w realizacji, jednakże stosowanie \textit{caret} niesie za sobą kilka zalet.
+Znacznie prościej jest weryfikować krzyżowo wyniki -- pomimo możliwości wykorzystania błędu OOB (Out-of-Bag) w \textit{ipred}, weryfikacja krzyżowa daje dużo lepsze zrozumienie spodziewanego błędu. 
+Dodatkowo możliwy jest dostęp do zmiennej odpowiedniości w wygenerowanych drzewach.
+%TODO tłumaczenie potwierdź pls: We can assess variable importance across the bagged trees
+
+%TODO który w końcu wybraliśmy
+%TODO to co jest niżej jest zajebane z elka.mine, trzeba zmienić
+Do konstrukcji modeli klasyfikacji został wykorzystany pakiet rpart budujacy drzewo klasyfikacji oraz pakiet
+e1071, który umozliwia waidacje skrosna oraz automatyczny dobór parametrów w celu zmninimalizowania
+błedu.
+
+\section{Budowa modelu klasyfikacji z pakietu ipred}
+%TODO pakiety R i parametry ~notatka z poprzedniego sprawka
+TODO - pakiety R, parametry (np kryteria stopu, etc)
+
+\section{Ocena modeli}
+TODO opisać że wybraliśmy np: \\
+CC - współczynnik korelacji liniowej Pearsona\\
+\begin{gather*}
+	\frac{cov(P,A)}{var(P) \cdot var(A)}
+\end{gather*}
+
+TODO tutaj ładnie się wpasuje co po kolei w kodzie poszło
+
+\endgroup
+
+
+
+
+\begingroup
+\let\clearpage\relax
+\chapter{Wnioski}
+
+TODO\\
+
+\endgroup
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%   
+% 		Załączniki z kodem
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%TODO nie wiem czy to potrzebne, ale daje objętość
+
+\lstset{language=R, 
+		basicstyle=\ttfamily\small,
+		frame=lines,
+		numbers=left,
+		numberstyle=\small\color{blue},
+		showtabs=true}
+		
+\pagebreak
+Plik: main.r
+\lstinputlisting{../R/main.r}
+\clearpage
+
+\pagebreak
+Plik: data{\_}org.R
+\lstinputlisting{../R/data_org.R}
+\clearpage
+
+\pagebreak
+Plik: feature{\_}selection.R
+\lstinputlisting{../R/feature_selection.R}
+\clearpage
+
+\pagebreak
+Plik: simple.filter.R
+\lstinputlisting{../R/simple.filter.R}
+\clearpage
+
+\pagebreak
+Plik: model{\_}eval.R
+\lstinputlisting{../R/model_eval.R}
+\clearpage
 
 \end{document}
