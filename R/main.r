@@ -11,6 +11,7 @@ library(dmr.regtree)
 
 rm(list = ls())
 
+target_t = "lights"
 # DATA COLLECTION AND ORGANIZATION GOES HERE
 
 source('R/data_org.R', echo=TRUE)
@@ -19,10 +20,10 @@ source('R/data_org.R', echo=TRUE)
 
 source('R/feature_selection.R')
 
-res <- feature_selection(formula_full = Appliances~.,
-                          target = "Appliances",
+res <- feature_selection(formula_full = lights~.,
+                          target = target_t,
                           test_data = test_data,
-                          type = "relief",
+                          type = "rf",
                           part = 0.5,
                           trees_num=100
                           )

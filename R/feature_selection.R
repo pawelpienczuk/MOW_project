@@ -11,11 +11,14 @@ library(dmr.attrsel)
 #' @title Feature Selection
 #'
 #' @param test_data  - data to perform feature ranking
+#' @param formula_full 
+#' @param target 
 #' @param type - "rf" - randomForest IMPORTANCE-based ranking (default),
 #' "relief" - RELIEF algorithm 
 #' "simple" - simple filter algorithm, based on 
 #' @param part - part of attributes returned by feature selection, 0 < part <=1 (default=0.5)
 #' @param trees_num - numbers of trees (randomForest) or bootstrap sets (bootstrap)
+
 #'
 #' @return formula with selected attributes
 #' 
@@ -93,7 +96,7 @@ feature_selection <<- function(formula_full,target,test_data,type="rf",part=1,tr
     
     res <- wrapper.filter.select(formula = formula_full,
                       data = test_data,
-                      utils = simple.filter(Appliances~.,test_data),
+                      utils = simple.filter(formula_full,test_data),
                       alg = rpart
     )
                       # initf = asel.init.none,
