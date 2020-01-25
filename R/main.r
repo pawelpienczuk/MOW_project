@@ -11,10 +11,14 @@ library(dmr.regtree)
 
 rm(list = ls())
 
-target_t = "lights"
-# DATA COLLECTION AND ORGANIZATION GOES HERE
 
-source('R/data_org.R', echo=TRUE)
+target_t <- "lights"
+
+# DATA COLLECTION AND ORGANIZATION GOES HERE
+# 10 to try function, 1000 to test try algorithm, 14803 to full
+testDataLength <- 1000
+
+source('R/data_org.R')
 
 # FEATURE SELECTION GOES HERE
 
@@ -23,9 +27,9 @@ source('R/feature_selection.R')
 res <- feature_selection(formula_full = lights~.,
                           target = target_t,
                           test_data = test_data,
-                          type = "rf",
+                          type = "simple",
                           part = 0.5,
-                          trees_num=100
+                          trees_num=20
                           )
 
 formula <- as.vector(res$attr_part[1])
@@ -51,7 +55,7 @@ tempdataframe2 <- model_eval(test_data = test_data,
 tempdataframe3 <- model_eval(test_data = test_data,
                              fun = bagging,
                              formula = formula,
-                             crossval_number = 20
+                             crossval_number = 10
 )
 # tempdataframe4 <- model_eval(test_data = test_data,
 #                              fun = train,
