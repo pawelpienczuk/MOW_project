@@ -152,6 +152,8 @@ Składają się z:
 
 \section{Przygotowanie danych}
 Każdy pomiar został uśredniony z 3 próbek wykonanych w równych odstępach co ok. 3,3 min. W ramach przygotowania danych, data i godzina pomiaru zostały rozdzielone na cztery oddzielne kolumny, zawierające miesiąc, dzień, godzinę i minutę pomiaru.
+\par
+Liczba wszystkich obserwacji, zebranych w pliku \textit{energydata\_complete.csv} wynosi 19735. Celem przyspieszenia obliczeń, algorytmy przedstawione w zadaniu zostały wykonane na danych zawierających 2000 pierwszych rekordów zmienna \textit{testDataLength}. Wszystkie operacje dot. przygotowania danych są wykonane w funkcji \textit{data\_org}.
 \endgroup
 
 
@@ -188,31 +190,47 @@ Każdy pomiar został uśredniony z 3 próbek wykonanych w równych odstępach c
 \let\clearpage\relax
 \chapter{Selekcja atrybutów}\label{chap:selekcja}
 
-%TODO zajebane z elka.mine
 Aby zapobiec nadmiernemu dopasowaniu, stosuje się selekcję atrybutów, która wybiera kilka najważniejszych atrybutów do późniejszego stworzenia modeli. Po zastosowaniu selekcji, modele oparte o ograniczoną liczbę atrybutów zwykle są lepsze od opartych o wszystkie atrybuty. Istnieje wiele metod selekcji atrybutów; w ramach projektu zostało sprawdzone kilka metod (w nawiasach umieszczono opcję type funkcji \textit{feature\_selection}):
 \begin{itemize}
 	\item[$\bullet$] prosty filtr statystyczny (\textit{,,simple''}) - pomiędzy każdym z atrybutów a celem regresji stosuje się miarę statystyczną, która określa zależność celu od danego atrybutu (dalej ,,miara zależności''). Następnie wybiera się kilka atrybutów o największej ,,mierze zależności''. W ramach regresji pomiędzy atrybutami ciągłymi zastosowano współczynnik korelacji (Pearsona);
-	\item[$\bullet$] bazująca na drzewach losowych (\textit{,,rf''}) - w tym celu wykorzystano pakiet randomForest i jego wbudowaną opcję zwracają parametr IMPORTANCE (bazujący na mierze MSE), o możliwości konfiguracji ilości drzew;
-	\item[$\bullet$] metoda RRELIEF (\textit{,,relief''}) - wersja algorytmu RELIEF do zastosowań w zadaniu regresji. Algorytm RELIEF, początkowo zaprojektowany dla zadania klasyfikacji binarnej, polega na losowym wybraniu obserwacji (jednego rekordu klasy+atrybuty). Następnie wyszukuje się \textit{k} najbardziej podobnych obserwacji tej samej klasy, oraz \textit{k} klasy przeciwnej. Dla każdego atrybutu oblicza się wagę istotności. Po wykonaniu \textit{trees\_num} operacji, wykonuje się średnią wag istotności. Atrybuty segreguje się według wag istotności. W zadaniu regresji stosuje się inne funkcje obliczające wagę np. funkcję rozkładu.
-	%\item[$\bullet$] metoda "wrapper" (\textit{,,wrapper''})- podejście zakładające, że nie istnieje jedyny najlepszy podzbiór atrybutów niezależny od zastosowanego modelu. W tym celu wybrano algorytm \textit{rpart} do wyboru najistotniejszych atrybutów.
+	\item[$\bullet$] bazująca na drzewach losowych (\textit{,,rf''}) - w tym celu wykorzystano pakiet randomForest i jego wbudowaną opcję zwracają parametr IMPORTANCE (bazujący na mierze MSE), o możliwości konfiguracji ilości drzew, w badaniu wykorzystano generowanie 500 drzew;
+	\item[$\bullet$] metoda RRELIEF (\textit{,,relief''}) - wersja algorytmu RELIEF do zastosowań w zadaniu regresji. Algorytm RELIEF, początkowo zaprojektowany dla zadania klasyfikacji binarnej, polega na losowym wybraniu obserwacji (jednego rekordu klasy+atrybuty). Następnie wyszukuje się \textit{k} najbardziej podobnych obserwacji tej samej klasy, oraz \textit{k} klasy przeciwnej. Dla każdego atrybutu oblicza się wagę istotności. Po wykonaniu \textit{K} operacji, wykonuje się średnią wag istotności. Atrybuty segreguje się według wag istotności. W zadaniu regresji stosuje się inne funkcje obliczające wagę np. funkcję rozkładu. W projekcie \textit{k=3}, \textit{K=50}.
 \end{itemize}
 	
 \par
-W ramach projektu stosuje się następujące podejście: dla każdej wymienionej metody wykonuje się selekcję połowy atrybutów (\textit{part=0.5}) atrybutów, następnie wyznaczoną formułę aplikuje się do stworzenia modelu \textit{rpart()}, i procedurze oceny (10-krotnej walidacji krzyżowej \textit{model\_eval()}). Następnie największy współczynnik korelacji Pearsona wyznacza najlepszą metodę selekcji atrybutów oraz formułę do stworzenia modelu.
+W ramach projektu stosuje się następujące podejście: dla każdej wymienionej metody wykonuje się selekcję połowy atrybutów (\textit{part=0.5}) atrybutów, następnie wyznaczoną formułę aplikuje się do stworzenia modelu \textit{rpart()}, i procedurze oceny (10-krotnej walidacji krzyżowej \textit{model\_eval()})\footnote{Więcej nt. procedury walidacji krzyżowej w rozdziale \ref{sect:proceduryOceny}}. Następnie największy współczynnik korelacji Pearsona wyznacza najlepszą metodę selekcji atrybutów oraz formułę do stworzenia modelu.
 
 %TODO zajebane z twojego readme z gita
 %Najprostszym, zadowalającym rozwiązaniem jest zastosowanie pakietu randomForest w celu wyznaczenia predykcyjnej przydatności atrybutów, a następnie wybór (może w kilku wariantach) pewnej liczby najlepszych atrybutów (np. najlepsze 25\%, 50\% itp.). W tym przypadku zalecałbym użycie miary "mean decrease accuracy", co wymaga użycia w wywołaniu funkcji randomForest argumentu importance=TRUE, zaś w wywołaniu funkcji importance lub varImpPlot argumentu type=1. Inne bardziej zautomatyzowane podejścia można znaleźć w kilku pakietach wymienionych tutaj: {\url{https://github.com/FrancisArgnR/R-FeatureSelection-Packages}}
 
 \section{Wyniki selekcji atrybutów}
 
-Na Rys. .... przedstawiono wyniki każdej z selekcji. W Tabeli \ref{table:wynikiSelekcji} przedstawiono porównanie wyników każdej z selekcji. Wynika z tego, że atrybuty wyznaczone metodą ..... pozwalają na najlepsze tłumaczenie modelu. Dla porównania przedstawiono też wynik walidacji krzyżowej dla modelu opartego o wszystkie atrybuty. Wynika 
+Na rysunkach \ref{fig:rfSelection}, \ref{fig:simpleSelection} i \ref{fig:reliefSelection} przedstawiono wyniki każdej z selekcji. Dla \textit{randomForest} i \textit{simple.filter} atrybut \textit{hours} dominuje nad pozostałymi. W tabeli \ref{table:wynikiSelekcji} przedstawiono porównanie wyników każdej z selekcji. Wynika z tego, że atrybuty wyznaczone funkcją \textit{simple.filter} pozwalają na najlepsze wyznaczenie modelu. Dla porównania przedstawiono też wynik walidacji krzyżowej dla modelu opartego o wszystkie atrybuty. Tylko selekcja atrybutów za pomocą \textit{simple.filter} pozwala na poprawę dla obecnych warunków testowych (dostępne dane, ilość selekcjonowanych argumentów, algorytm do walidacji krzyżowej). W związku z wynikami, atrybuty wyznaczono za pomocą prostego filtru statystycznego posłużą w dalszej konstrukcji modelów.
+ \begin{figure}[!h]
+    \centering \includegraphics[scale=0.3]{../rfSelection_lights.png}
+    \caption{Wyniki selekcji z wykorzystaniem pakietu \textit{randomForest}; cel: lights}
+    \label{fig:rfSelection}
+\end{figure}
+
+ \begin{figure}[!h]
+    \centering \includegraphics[scale=0.3]{../simpleSelection_lights.png}
+    \caption{Wyniki selekcji z wykorzystaniem funkcji \textit{simple.filter}; cel: lights}
+    \label{fig:simpleSelection}
+\end{figure}
+
+ \begin{figure}[!h]
+    \centering \includegraphics[scale=0.3]{../reliefSelection_lights.png}
+    \caption{Wyniki selekcji z wykorzystaniem  funkcji \textit{rrelief.filter}; cel: lights}
+    \label{fig:reliefSelection}
+\end{figure}
+
 
 \begin{table}[!h]  \centering
-\caption{Wyniki selekcji atrybutów - współczynniki korelacji}
+\caption{Wyniki selekcji atrybutów --- współczynniki korelacji}
 \begin{tabular} { c  c  c  c  c } \hline \hline
     \textbf{Parametr} & \textbf{\textit{randomForest}} & \textbf{\textit{simple}} & \textbf{\textit{RELIEF}} & \textbf{bez selekcji}  \\ \hline
-    Appliances & 0,764 & 0,798 & 0,766 & 0,779 \\
-    lights & 0,764 & 0,798 & 0,766 & 0,779 \\
+    Appliances & 0,555 & 0,616 & 0,553 & 0,585 \\
+    lights & 0,364 & 0,457 & 0,334 & 0,447 \\
     \hline \hline
     
 \end{tabular}
@@ -226,31 +244,16 @@ Na Rys. .... przedstawiono wyniki każdej z selekcji. W Tabeli \ref{table:wyniki
 \chapter{Konstrukcja i ocena modeli}
 
 \section{Metody konstrukcji modeli}
-Pojedyncze modele drzew regresji zazwyczaj cierpią z powodu wysokiej wariancji -- jedną z metod jej redukcji jest tzw. Bagging (\textbf{B}ootstrap \textbf{agg}regat\textbf{ing}). 
-Metoda ta polega na łączeniu i uśrednianiu wielu modeli drzew, co  zmniejsza wariancję i redukuje zbytnie dopasowanie.
-%TODO dokładniejszy opis działania bo wydaje się mało
-%Create m bootstrap samples from the training data. Bootstrapped samples allow us to create many slightly different data sets but with the same distribution as the overall training set.
-%For each bootstrap sample train a single, unpruned regression tree.
-%Average individual predictions from each tree to create an overall average predicted value.
-
-Bagging może zostać zrealizowany za pomocą pakietu
-\textit{ipred} 
-lub
-\textit{caret}. 
-\textit{Ipred} jest z reguły prostszy w realizacji, jednakże stosowanie \textit{caret} niesie za sobą kilka zalet.
-Znacznie prościej jest weryfikować krzyżowo wyniki -- pomimo możliwości wykorzystania błędu OOB (Out-of-Bag) w \textit{ipred}, weryfikacja krzyżowa daje dużo lepsze zrozumienie spodziewanego błędu. 
-Dodatkowo możliwy jest dostęp do zmiennej odpowiedniości w wygenerowanych drzewach.
-%TODO tłumaczenie potwierdź pls: We can assess variable importance across the bagged trees
-
-%TODO który w końcu wybraliśmy
-%TODO to co jest niżej jest zajebane z elka.mine, trzeba zmienić
-Do konstrukcji modeli klasyfikacji został wykorzystany pakiet rpart budujacy drzewo klasyfikacji oraz pakiet
-e1071, który umozliwia waidacje skrosna oraz automatyczny dobór parametrów w celu zmninimalizowania
-błedu.
-
-\section{Budowa modelu klasyfikacji z pakietu ipred}
-%TODO pakiety R i parametry ~notatka z poprzedniego sprawka
-TODO - pakiety R, parametry (np kryteria stopu, etc)
+W pierwszym kroku dokonano modelowania za pomocą liniowej regresji. Realizuje ją algorytm \textit{lm()}. Argumentami algorytmu są tylko: formuła (cel+atrybuty) oraz zestaw danych w formie \textit{data.frame}. Algorytm na podstawie średniej lub mediany wyznacza współczynniki funkcji liniowej tj. współczynnik kierunkowy i wyraz wolny. Następnie od każdego atrybuty wyznacza wagę współczynniku kierunkowego oraz jeden wyraz wolny. Zaletą tego algorytmu jest jego prostota i szybkość działania, niewątpliwą wadą jest fakt, że większość procesów zachodzących w świecie nie da się opisać za pomocą liniowych zależności.
+\par 
+Następnie dokonano modelowania za pomocą drzew regresji (algorytm \textit{rpart()}). Funkcja buduje model rekurencyjnie dzieląc zbiór na mniejsze i wyznaczając dla nich średnią. Dla metody ,,anova'' dedykowanej do zadania regresji kryterium podziału wyznaczone jest na podstawie sum kwadratów dla danego węzła i dla jego potomnych. Algorytm może przyjąć także argumenty na minimalną liczbę podziałów \textit{minsplit} oraz maksymalną głębokość drzewa \textit{maxdepth} (czyli długość pomiędzy korzeniem a liśćmi).
+% https://cran.r-project.org/web/packages/rpart/vignettes/longintro.pdf
+\par
+Pojedyncze modele drzew regresji zazwyczaj cierpią z powodu wysokiej wariancji -- jedną z metod jej redukcji jest tzw. Bagging (\textbf{B}ootstrap \textbf{agg}regat\textbf{ing}). W ramach tej metody tworzonych jest pewna liczba zbiorów "bootstrapowych". Dla każdego z tych zbiorów tworzy się nieprzycięte drzewo regresji. Następnie uśrednia sie każdy z tych modeli, zmniejszając wariancję i redukując zbytnie dopasowanie. Bagging może zostać zrealizowany za pomocą pakietu \textit{ipred} lub \textit{caret}. Zasada działania modelowania przy pomocy tych pakietów jest podobna, pakiet \textit{caret} pozwala natomiast na łatwą analizę istotności atrybutów. Celem porównania wyników realizowanych przez oba algorytmy, zdecydowano się na użycie ich obu.
+\par
+Modele oparte o drzewo regresji cierpią z powodu faktu, że w liściach, które reprezentują pewny podzbiór przestrzeni (na której buduje się model), wynikiem jest pojedyncza liczba. Przykładowo dla zależności celu od jednego atrybutu można to funkcja reprezentująca model może być nieciągła i stworzona z odcinków o zerowym współczynniku kierunkowym. Dużo lepiej byłoby aproksymować tę zależność funkcją kawałkami liniową.  W tym celu wykorzystuje się regresję kawałkami liniową (\textit{grow.modtree} z pakietu \textit{dmr.regtree}). Za pomocą listy \textit{plr\_args} ograniczono głębokość drzewa do 10 oraz wymuszono co najmniej 2 podziały.
+\par
+Modele opisane w tym podrozdziale zostały ocenione za pomocą procedury k-krotnej walidacji krzyżowej z wykorzystaniem miar jakości opisanych dalej. 
 
 \section{Miary jakości}\label{sect:ocenamodeli}
 Dla zbudowanych modeli oblicza się następujące miary jakości:
@@ -293,13 +296,35 @@ RAE - błąd względny
 \end{enumerate}
 TODO tutaj ładnie się wpasuje co po kolei w kodzie poszło
 
-\section{Procedury oceny}
+\section{Procedury oceny}\label{sect:proceduryOceny}
 Aby móc ocenić model pod względem przydatności zastosowano metodę k-krotnej walidacji krzyżowej. Kod zawarto w funkcji \textit{model\_eval()}, która stanowi . Zbiór testowy jest dzielony losowo na k podzbiorów równej wielkości. W kolejnych iteracjach każdy ze zbiorów jest traktowany jako zbiór testowy, podczas gdy na reszcie danych buduje się model. Następnie modele są uśredniane i następuje predykcja. Po predykcji modelu na zbiorze testowym wyznacza się miary jakości opisane w \ref{sect:ocenamodeli}.      
+
+\section{Procedury oceny}\label{sect:wyniki}
+Wyniki 10-krotnej walidacji krzyżowej zostały przedstawione w tabeli \ref{table:wynikiKCV}. Przedstawia ona miary jakości wyznaczone za pomocą tej procedury dla każdego algorytmu.
+
+\begin{table}[!h]  \centering
+\caption{Walidacja krzyżowa --- porównanie parametrów}
+\begin{tabular} { c  c  c  c  c  c  c  c} \hline \hline
+    \textbf{Appliances} & \textbf{MSE} & \textbf{RRSE} & \textbf{MAE} & \textbf{RMSE} & \textbf{RAE} & \textbf{CC} & \textbf{RSE} \\ \hline
+	\textit{lm()} & 14914.800 & 2.5702027	&  75.20398	& 122.12616	& 1.9553172	& 0.3425775 & 6.6059421 \\
+	\textit{rpart()} & 11646.595 &	1.2051757	& 58.13124 & 107.91939 & 1.0320860	& 0.5698647 & 1.4524484 \\
+	\textit{ipred} & 9016.412&	1.3234627&	53.02221&	94.95479&	1.0308015&	0.6983742&	1.7515534 \\
+	\textit{PLR} & 266453.137	& 0.9929399 &	78.68274&	516.19099&	0.8137909&	0.1532704&	0.9859296 \\
+	\textit{caret} & 8958.720& 	1.2985949&	52.82693&	94.65051&	1.0113670&	0.6991588&	1.6863487 \\
+    \hline \hline
+\textbf{lights} & \textbf{MSE} & \textbf{RRSE} & \textbf{MAE} & \textbf{RMSE} & \textbf{RAE} & \textbf{CC} & \textbf{RSE} \\ \hline
+	\textit{lm()} & 0,259 & 0,404 & 0,185 & 0,404 & 0,404 & 0,404 & 0,404 \\
+	\textit{rpart()} & 0,259 & 0,404 & 0,185 & 0,404 & 0,404 & 0,404 & 0,404 \\
+	\textit{ipred} & 0,259 & 0,404 & 0,185 & 0,404 & 0,404 & 0,404 & 0,404 \\
+	\textit{PLR} & 0,259 & 0,404 & 0,185 & 0,404 & 0,404 & 0,404 & 0,404 \\
+	\textit{caret} & 0,259 & 0,404 & 0,185 & 0,404 & 0,404 & 0,404 & 0,404 \\
+    
+\end{tabular}
+\label{table:wynikiKCV}
+\end{table}
 
 
 \endgroup
-
-
 
 
 \begingroup

@@ -13,13 +13,13 @@ library(dmr.regtree)
 rm(list = ls())
 
 
-target_t <- "lights"
+target_t <- "Appliances"
 
 # DATA COLLECTION AND ORGANIZATION GOES HERE
 # 10 to try function, 1000 to test try algorithm, 14803 to full
 source('R/data_org.R')
 
-testDataLength <- 14803
+testDataLength <- 2000
 complete_data <- read.csv("energydata_complete.csv")
 
 test_data <- dataOrganization(complete_data, target_t,testDataLength)
@@ -48,7 +48,7 @@ for (k in 1:length(featSelTypes)){
   crossval.rpart <- model_eval(test_data = test_data,
                                fun = rpart,
                                formula = formula[k],
-                               crossval_number = 10,
+                               crossval_number = 20,
                                args = list(method="anova")
   )
   corMeasures <- c(corMeasures,crossval.rpart$COR)
@@ -57,11 +57,12 @@ for (k in 1:length(featSelTypes)){
 # with all attributes
 crossval.rpart <- model_eval(test_data = test_data,
                              fun = rpart,
-                             formula = as.formula(paste(target_t, "~.")),
+                             formula = paste(target_t, "~."),
                              args = list(method ="anova"),
-                             crossval_number = 10
+                             crossval_number = 20
 )
 corMeasures <- c(corMeasures,crossval.rpart$COR)
+formula <- c(formula,(paste(target_t, "~.")))
 
 #selection of best formula
 k <- which.max(corMeasures)
@@ -72,25 +73,25 @@ formula <- formula[k]
 crossval.lm <- model_eval(test_data = test_data,
                              fun = lm,
                              formula = formula,
-                             crossval_number = 10
+                             crossval_number = 20
 )
 crossval.rpart <- model_eval(test_data = test_data,
                             fun = rpart,
                             formula = formula,
-                            crossval_number = 10
+                            crossval_number = 20
                             )
 
 crossval.bagging <- model_eval(test_data = test_data,
                              fun = bagging,
                              formula = formula,
-                             crossval_number = 10
+                             crossval_number = 20
 )
 plr_args <- list(minsplit=2, maxdepth=8)
 
 crossval.plr <- model_eval(test_data=test_data,
                              fun = grow.modtree,
                              formula = formula,
-                             crossval_number = 10,
+                             crossval_number = 20,
                              args = plr_args
                              )
 
@@ -100,7 +101,7 @@ args_t <- c(method="treebag",trControl=ctrl)
 crossval.caret <- model_eval(test_data = test_data,
                              fun = train,
                              formula = formula,
-                             crossval_number = 10,
+                             crossval_number = 20,
                              args=args_t
 )
 

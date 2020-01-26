@@ -71,7 +71,7 @@ feature_selection <<- function(formula_full,target,test_data,type="rf",part=1,tr
     res <- rrelief.filter(formula = formula_full,
                          data = test_data,
                          k=3,
-                         K=trees_num)
+                         K=20)
     
     names_t <- names(res)
     
@@ -87,7 +87,7 @@ feature_selection <<- function(formula_full,target,test_data,type="rf",part=1,tr
   else if (type=="simple"){
     
     res <- simple.filter(formula = formula_full,
-                         data = discnm.eqfreq(~.,test_data,50),
+                         data = discnm.eqfreq(~.,test_data,10),
                          dd=symunc)
     
     names_t <- names(res)
