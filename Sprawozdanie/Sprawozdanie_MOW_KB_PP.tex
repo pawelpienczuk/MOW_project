@@ -105,12 +105,6 @@ Paweł Pieńczuk\par}
 \endgroup\clearpage}
 \end{titlepage} 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%   
-% Sprawko właściwe
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%TODO nazwy chapterów ukradzione z elka.mine
-%TODO ciężkie wzorowanie w tym co napisane/ będzie napisane
 \large %trochę cheat na objętość
 
 \begingroup
@@ -160,32 +154,6 @@ Liczba wszystkich obserwacji, zebranych w pliku \textit{energydata\_complete.csv
 %\pagebreak
 \clearpage
 
-%\begingroup
-%\let\clearpage\relax
-%\chapter{Opis algorytmów}
-%
-%
-%TODO - ten chapter jest imo zawarty w 'konstrukcji i ocenie modeli'\\
-%ergo można usunąć, grafikę przenieść tam.\\
-%(chapter jest tutaj bo skopiowałem sprawko wstępne)\\
-%(grafika nie wiem czemu tutaj jest, tak wyszło)\\
-%
-%%\begin{figure}[H]%
-%%    \centering
-%%    \subfloat{{
-%%    	\includegraphics[page=1,
-%%				width=0.8\linewidth,
-%%				origin=c	
-%%		]{../Rplots.pdf}
-%%    }}%
-%%    %\caption{TODO caption}%
-%%    \label{FIG_1}%
-%%\end{figure}
-%
-%\endgroup
-
-
-
 \begingroup
 \let\clearpage\relax
 \chapter{Selekcja atrybutów}\label{chap:selekcja}
@@ -200,28 +168,43 @@ Aby zapobiec nadmiernemu dopasowaniu, stosuje się selekcję atrybutów, która 
 \par
 W ramach projektu stosuje się następujące podejście: dla każdej wymienionej metody wykonuje się selekcję połowy atrybutów (\textit{part=0.5}) atrybutów, następnie wyznaczoną formułę aplikuje się do stworzenia modelu \textit{rpart()}, i procedurze oceny (10-krotnej walidacji krzyżowej \textit{model\_eval()})\footnote{Więcej nt. procedury walidacji krzyżowej w rozdziale \ref{sect:proceduryOceny}}. Następnie największy współczynnik korelacji Pearsona wyznacza najlepszą metodę selekcji atrybutów oraz formułę do stworzenia modelu.
 
-%TODO zajebane z twojego readme z gita
-%Najprostszym, zadowalającym rozwiązaniem jest zastosowanie pakietu randomForest w celu wyznaczenia predykcyjnej przydatności atrybutów, a następnie wybór (może w kilku wariantach) pewnej liczby najlepszych atrybutów (np. najlepsze 25\%, 50\% itp.). W tym przypadku zalecałbym użycie miary "mean decrease accuracy", co wymaga użycia w wywołaniu funkcji randomForest argumentu importance=TRUE, zaś w wywołaniu funkcji importance lub varImpPlot argumentu type=1. Inne bardziej zautomatyzowane podejścia można znaleźć w kilku pakietach wymienionych tutaj: {\url{https://github.com/FrancisArgnR/R-FeatureSelection-Packages}}
-
 \section{Wyniki selekcji atrybutów}
 
-Na rysunkach \ref{fig:rfSelection}, \ref{fig:simpleSelection} i \ref{fig:reliefSelection} przedstawiono wyniki każdej z selekcji. Dla \textit{randomForest} i \textit{simple.filter} atrybut \textit{hours} dominuje nad pozostałymi. W tabeli \ref{table:wynikiSelekcji} przedstawiono porównanie wyników każdej z selekcji. Wynika z tego, że atrybuty wyznaczone funkcją \textit{simple.filter} pozwalają na najlepsze wyznaczenie modelu. Dla porównania przedstawiono też wynik walidacji krzyżowej dla modelu opartego o wszystkie atrybuty. Tylko selekcja atrybutów za pomocą \textit{simple.filter} pozwala na poprawę dla obecnych warunków testowych (dostępne dane, ilość selekcjonowanych argumentów, algorytm do walidacji krzyżowej). W związku z wynikami, atrybuty wyznaczono za pomocą prostego filtru statystycznego posłużą w dalszej konstrukcji modelów.
+Na rysunkach \ref{fig:rf_app} -- \ref{fig:relief_app} przedstawiono wyniki każdej z selekcji. Dla \textit{randomForest} i \textit{simple.filter} atrybut \textit{hours} dominuje nad pozostałymi. W tabeli \ref{table:wynikiSelekcji} przedstawiono porównanie wyników każdej z selekcji. Wynika z tego, że atrybuty wyznaczone funkcją \textit{simple.filter} pozwalają na najlepsze wyznaczenie modelu. Dla porównania przedstawiono też wynik walidacji krzyżowej dla modelu opartego o wszystkie atrybuty. Tylko selekcja atrybutów za pomocą \textit{simple.filter} pozwala na poprawę dla obecnych warunków testowych (dostępne dane, ilość selekcjonowanych argumentów, algorytm do walidacji krzyżowej). W związku z wynikami, atrybuty wyznaczono za pomocą prostego filtru statystycznego posłużą w dalszej konstrukcji modelów.
  \begin{figure}[!h]
-    \centering \includegraphics[scale=0.3]{../rfSelection_lights.png}
+    \centering \includegraphics[scale=0.4]{../rf_lights.png}
     \caption{Wyniki selekcji z wykorzystaniem pakietu \textit{randomForest}; cel: lights}
-    \label{fig:rfSelection}
+    \label{fig:rf_lights}
 \end{figure}
 
  \begin{figure}[!h]
-    \centering \includegraphics[scale=0.3]{../simpleSelection_lights.png}
+    \centering \includegraphics[scale=0.4]{../simple_lights.png}
     \caption{Wyniki selekcji z wykorzystaniem funkcji \textit{simple.filter}; cel: lights}
-    \label{fig:simpleSelection}
+    \label{fig:simple_lights}
 \end{figure}
 
  \begin{figure}[!h]
-    \centering \includegraphics[scale=0.3]{../reliefSelection_lights.png}
+    \centering \includegraphics[scale=0.4]{../relief_lights.png}
     \caption{Wyniki selekcji z wykorzystaniem  funkcji \textit{rrelief.filter}; cel: lights}
-    \label{fig:reliefSelection}
+    \label{fig:relief_lights}
+\end{figure}
+
+ \begin{figure}[!h]
+    \centering \includegraphics[scale=0.4]{../rf_app.png}
+    \caption{Wyniki selekcji z wykorzystaniem pakietu \textit{randomForest}; cel: Appliances}
+    \label{fig:rf_app}
+\end{figure}
+
+ \begin{figure}[!h]
+    \centering \includegraphics[scale=0.4]{../simple_app.png}
+    \caption{Wyniki selekcji z wykorzystaniem funkcji \textit{simple.filter}; cel: Appliances}
+    \label{fig:simple_app}
+\end{figure}
+
+ \begin{figure}[!h]
+    \centering \includegraphics[scale=0.4]{../relief_app.png}
+    \caption{Wyniki selekcji z wykorzystaniem  funkcji \textit{rrelief.filter}; cel: Appliances}
+    \label{fig:relief_app}
 \end{figure}
 
 
@@ -230,7 +213,7 @@ Na rysunkach \ref{fig:rfSelection}, \ref{fig:simpleSelection} i \ref{fig:reliefS
 \begin{tabular} { c  c  c  c  c } \hline \hline
     \textbf{Parametr} & \textbf{\textit{randomForest}} & \textbf{\textit{simple}} & \textbf{\textit{RELIEF}} & \textbf{bez selekcji}  \\ \hline
     Appliances & 0,555 & 0,616 & 0,553 & 0,585 \\
-    lights & 0,364 & 0,457 & 0,334 & 0,447 \\
+    lights & 0,672 & 0,759 & 0,691 & 0,757 \\
     \hline \hline
     
 \end{tabular}
@@ -299,8 +282,8 @@ TODO tutaj ładnie się wpasuje co po kolei w kodzie poszło
 \section{Procedury oceny}\label{sect:proceduryOceny}
 Aby móc ocenić model pod względem przydatności zastosowano metodę k-krotnej walidacji krzyżowej. Kod zawarto w funkcji \textit{model\_eval()}, która stanowi . Zbiór testowy jest dzielony losowo na k podzbiorów równej wielkości. W kolejnych iteracjach każdy ze zbiorów jest traktowany jako zbiór testowy, podczas gdy na reszcie danych buduje się model. Następnie modele są uśredniane i następuje predykcja. Po predykcji modelu na zbiorze testowym wyznacza się miary jakości opisane w \ref{sect:ocenamodeli}.      
 
-\section{Procedury oceny}\label{sect:wyniki}
-Wyniki 10-krotnej walidacji krzyżowej zostały przedstawione w tabeli \ref{table:wynikiKCV}. Przedstawia ona miary jakości wyznaczone za pomocą tej procedury dla każdego algorytmu.
+\section{Wyniki walidacji krzyżowej}\label{sect:wyniki}
+Wyniki 10-krotnej walidacji krzyżowej zostały przedstawione w tabeli \ref{table:wynikiKCV}. Przedstawia ona miary jakości wyznaczone za pomocą tej procedury dla każdego algorytmu. Zauważa się przewagę metod \textit{bootstrapowych} nad innymi. Błędy i współczynniki korelacji dla tych metod osiągają najmniejsze wartości. Ewentualne różnice pomiędzy wynikami algorytmów z pakietów \textit{ipred} i \textit{caret} można tłumaczyć losowością procesu tworzenia ich modelu i/lub procedury oceny. Zauważa się też różnicę pomiędzy predykcją celu \textit{Appliances} a \textit{lights}. Wydaje się to byc zgodne z intuicją --- zwykle światła włącza się w dzień, a wyłącza w nocy. Z kolei różne urządzenia AGD stosuje się w różnych okresach, więc znalezienie szczególnej zależności może być skomplikowanym zadaniem.   
 
 \begin{table}[!h]  \centering
 \caption{Walidacja krzyżowa --- porównanie parametrów}
@@ -313,19 +296,17 @@ Wyniki 10-krotnej walidacji krzyżowej zostały przedstawione w tabeli \ref{tabl
 	\textit{caret} & 8958.720& 	1.2985949&	52.82693&	94.65051&	1.0113670&	0.6991588&	1.6863487 \\
     \hline \hline
 \textbf{lights} & \textbf{MSE} & \textbf{RRSE} & \textbf{MAE} & \textbf{RMSE} & \textbf{RAE} & \textbf{CC} & \textbf{RSE} \\ \hline
-	\textit{lm()} & 0,259 & 0,404 & 0,185 & 0,404 & 0,404 & 0,404 & 0,404 \\
-	\textit{rpart()} & 0,259 & 0,404 & 0,185 & 0,404 & 0,404 & 0,404 & 0,404 \\
-	\textit{ipred} & 0,259 & 0,404 & 0,185 & 0,404 & 0,404 & 0,404 & 0,404 \\
-	\textit{PLR} & 0,259 & 0,404 & 0,185 & 0,404 & 0,404 & 0,404 & 0,404 \\
-	\textit{caret} & 0,259 & 0,404 & 0,185 & 0,404 & 0,404 & 0,404 & 0,404 \\
+	\textit{lm()} & 63.61679 &	1.6605096 &	5.640188 &	7.976013 &	1.4319283 &	0.50520939 &	2.7572920 \\
+	\textit{rpart()} & 38.27473 & 0.8563671 &	3.815467 &	6.186657 &	0.7194938 &	0.74393671 &	0.7333646 \\
+	\textit{ipred} & 30.00860 &	0.8274880 &	3.578404 &	5.478011 &	0.7473722 &	0.81096864 &	0.6847364 \\
+	\textit{PLR} & 7264.81589 &	0.9960550 &	9.868371 &	85.233889 &	0.7595684 &	0.09086541 &	0.9921255 \\
+	\textit{caret} & 30.92202 &	0.8363734 &	3.593142 &	5.560757 &	0.7441449 &	0.80317142 &	0.6995204 \\
     
 \end{tabular}
 \label{table:wynikiKCV}
 \end{table}
 
-
 \endgroup
-
 
 \begingroup
 \let\clearpage\relax
@@ -335,11 +316,4 @@ TODO\\
 
 \endgroup
 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%   
-% 		Załączniki z kodem
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%TODO nie wiem czy to potrzebne, ale daje objętość
-%
 \end{document}

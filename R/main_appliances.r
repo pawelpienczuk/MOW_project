@@ -13,7 +13,7 @@ library(dmr.regtree)
 rm(list = ls())
 
 
-target_t <- "Appliances"
+target_t <- "lights"
 
 # DATA COLLECTION AND ORGANIZATION GOES HERE
 # 10 to try function, 1000 to test try algorithm, 14803 to full
