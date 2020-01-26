@@ -12,47 +12,67 @@ library(dmr.regtree)
 
 rm(list = ls())
 
-# DATA COLLECTION AND ORGANIZATION GOES HERE
 
-source('R/data_org.R', echo=TRUE)
+target_t <- "lights"
+
+# DATA COLLECTION AND ORGANIZATION GOES HERE
+# 10 to try function, 1000 to test try algorithm, 14803 to full
+source('R/data_org.R')
+
+testDataLength <- 1000 
+complete_data <- read.csv("energydata_complete.csv")
+
+test_data <- dataOrganization(complete_data, target_t,testDataLength)
 
 # FEATURE SELECTION GOES HERE
 
 source('R/feature_selection.R')
-source('R/simple.filter.R')
 
-res <- feature_selection(test_data = test_data,
-                               type = "rf",
-                               part = 0.25,
-                               trees_num=20)
+res <- feature_selection(formula_full = as.formula(paste(target_t, "~.")),
+                          target = target_t,
+                          test_data = test_data,
+                          type = "simple",
+                          part = 0.5,
+                          trees_num=20
+                          )
 
+formula <- as.vector(res$attr_part[1])
 # CREATING MODELS GOES HERE
 
 # EVALUATION PROCEDURES GOES HERE
 
 source("R/model_eval.R")
 
-ctrl <- trainControl(method = "cv", number = 10)
-args_t <- c(method="treebag",trControl=ctrl)
-
 tempdataframe <- model_eval(test_data = test_data,
                             fun = rpart,
-                            formula = as.character(res$attr_part[1]),
-                            crossval_number = 10
+                            formula = formula,
+                            crossval_number = 20
                             )
 tempdataframe2 <- model_eval(test_data = test_data,
                              fun = lm,
-                             formula = as.character(res$attr_part[1]),
-                             crossval_number = 10
+                             formula = formula,
+                             crossval_number = 20
                             )
 tempdataframe3 <- model_eval(test_data = test_data,
                              fun = bagging,
-                             formula = as.character(res$attr_part[1]),
-                             crossval_number = 10
+                             formula = formula,
+                             crossval_number = 20
 )
-tempdataframe4 <- model_eval(test_data = test_data,
+plr_args <- list(minsplit=2, maxdepth=8)
+
+tempdataframe4 <- model_eval(test_data=test_data,
+                             fun = grow.modtree,
+                             formula = formula,
+                             crossval_number = 20,
+                             args = plr_args
+                             )
+
+ctrl <- trainControl(method = "cv", number = 10)
+args_t <- c(method="treebag",trControl=ctrl)
+
+tempdataframe5 <- model_eval(test_data = test_data,
                              fun = train,
-                             formula = as.character(res$attr_part[1]),
-                             crossval_number = 10,
+                             formula = formula,
+                             crossval_number = 20,
                              args=args_t
 )
