@@ -16,7 +16,6 @@ library(dmr.attrsel)
 #' @param type  "rf" - randomForest IMPORTANCE-based ranking (default),
 #' "relief" - RELIEF algorithm 
 #' "simple" - simple filter algorithm
-#' "wrapper" - wrapper algorithm
 #' @param part part of attributes returned by feature selection, 0 < part <=1 (default=0.5)
 #' @param trees_num numbers of trees (randomForest) or bootstrap sets (bootstrap)
 #'
@@ -48,21 +47,23 @@ feature_selection <<- function(formula_full,target,test_data,type="rf",part=1,tr
                         importance = TRUE,
                         ntree=trees_num)
     importance_RF <- data.frame(importance(full_model_RF, type=1), "k"=1:(ncol(test_data)-1))
-    wyniki <- data.frame("importance"=importance_RF[order(importance_RF[,1],decreasing = TRUE),1],
+    res <- data.frame("importance"=importance_RF[order(importance_RF[,1],decreasing = TRUE),1],
                               "k"=importance_RF$k[order(importance_RF[,1],decreasing = TRUE)], 
                               "attr"=rownames(importance_RF)[order(importance_RF[,1], decreasing=TRUE)])
     
     # plotting most important parameters
-    varImpPlot(x=full_model_RF,
-             n.var=count,
-             type=1,
-             main="Variable importance")
+    barplot(res$importance[1:count],main="Most important variables - randomForest",names.arg = res$attr[1:count])
+    
+    # varImpPlot(x=full_model_RF,
+    #          n.var=count,
+    #          type=1,
+    #          main="Most important variables - randomForest importance")
     
     # passing most important attributes from feature selection
     count <- ceiling((ncol(test_data)-1)*part)
-    attr_part <- paste(wyniki$attr[2:count], collapse = "+")
+    attr_part <- paste(res$attr[2:count], collapse = "+")
     attr_part <- paste(target, "~", attr_part)
-    out <- data.frame(attr_part,wyniki)
+    out <- data.frame(attr_part,res)
     return(out)
   }
   else if(type=="relief"){
@@ -75,7 +76,7 @@ feature_selection <<- function(formula_full,target,test_data,type="rf",part=1,tr
     names_t <- names(res)
     
     # plotting most important parameters
-    barplot(as.vector(res)[1:count],main="Most important variables",names.arg = names_t[1:count])
+    barplot(as.vector(res)[1:count],main="Most important variables - relief",names.arg = names_t[1:count])
       
     attr_part <- paste(names_t[1:count], collapse = "+")
     attr_part <- paste(target, "~", attr_part)
@@ -92,7 +93,7 @@ feature_selection <<- function(formula_full,target,test_data,type="rf",part=1,tr
     names_t <- names(res)
     
     # plotting most important parameters
-    barplot(as.vector(res)[1:count],main="Most important variables",names.arg = names_t[1:count])
+    barplot(as.vector(res)[1:count],main="Most important variables - simple",names.arg = names_t[1:count])
     
     attr_part <- paste(names_t[1:count], collapse = "+")
     attr_part <- paste(target, "~", attr_part)
@@ -100,27 +101,28 @@ feature_selection <<- function(formula_full,target,test_data,type="rf",part=1,tr
     return(out)
   }
   
-  else if (type=="wrapper"){
-    
-    res <- wrapper.filter.select(formula = formula_full,
-                      data = test_data,
-                      utils = simple.filter(formula_full,test_data),
-                      alg = rpart,
-                      args = list(minsplit=2)
-    )
-                      # initf = asel.init.none,
-                      # nextf = asel.next.forward
-                      
-    names_t <- res$subset
-    
-    # plotting most important parameters
-    barplot(res$eval[1:count],main="Most important variables",names.arg = names_t[1:count])
-    
-    attr_part <- paste(names_t, collapse = "+")
-    attr_part <- paste(target, "~", attr_part)
-    out <- data.frame(attr_part,res)
-    return(out)
-  }
+  # else if (type=="wrapper"){
+  #   
+  #   res <- wrapper.filter.select(formula = formula_full,
+  #                     data = test_data,
+  #                     utils = rpart(formula_full,test_data),
+  #                     alg = rpart,
+  #                     args = list(minsplit=2),
+  #                     initf = asel.init.none,
+  #                     nextf = asel.next.forward
+  #   )
+  # 
+  #                     
+  #   names_t <- res$subset
+  #   
+  #   # plotting most important parameters
+  #   barplot(res$eval[1:count],main="Most important variables - wrapper",names.arg = names_t[1:count])
+  #   
+  #   attr_part <- paste(names_t, collapse = "+")
+  #   attr_part <- paste(target, "~", attr_part)
+  #   out <- data.frame(attr_part,res)
+  #   return(out)
+  # }
   else{
     message("Wrong type of feature selection: \"relief\" \"rf\" or \"simple\" ")
     stop()

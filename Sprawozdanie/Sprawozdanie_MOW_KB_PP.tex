@@ -117,15 +117,13 @@ Paweł Pieńczuk\par}
 \let\clearpage\relax
 \chapter{Opis projektu} %Interpretacja tematu
 
-Celem projektu było wyznaczenie całkowitego zużycia energii dla zadanej chwili czasu, tzn. sumy poborów sprzętów AGD (kolumna ‘Appliances’) i oświetlenia (kolumna ‘Lights’). 
+Celem projektu było wyznaczenie całkowitego zużycia energii dla zadanej chwili czasu, tzn. sumy poborów sprzętów AGD (kolumna \textit{Appliances}) i oświetlenia (kolumna \textit{lights}). 
 Zbiór danych został pozyskany z archiwum dostępnego na stronie: 
-{\url{https://archive.ics.uci.edu/ml/datasets/Appliances+energy+prediction}}. Pojęciem docelowym jest wartość całkowitej pobieranej mocy przez gospodarstwo domowe.
-
-TODO
-%TODO jaki to rodzaj problemu+opis
+{\url{https://archive.ics.uci.edu/ml/datasets/Appliances+energy+prediction}}. Pojęciem docelowym jest wartość całkowitej pobieranej mocy przez gospodarstwo domowe. W ramach projektu zdecydowano się na oddzielne wykonania zadania regresji dla celu \textit{Appliances} i celu \textit{lights}, ze względu na hipotezę, że modele je wyznaczające mogą mieć inne właściwości.
+\par
+Dokonano selekcji atrybutów za pomocą trzech algorytmów opisanych w rozdziale \ref{chap:selekcja}. Przeprowadzono procedurę oceny algorytmów liniowej regresji, drzew regresji oraz kawałkami liniowej regresji. 
 
 \endgroup
-
 
 \begingroup
 \let\clearpage\relax
@@ -153,62 +151,75 @@ Składają się z:
 \end{itemize}
 
 \section{Przygotowanie danych}
-Każdy pomiar został uśredniony z 3 próbek wykonanych w równych odstępach co ok. 3,3 min. W ramach przygotowania danych, data i godzina pomiaru zostały rozdzielone na dwie oddzielne kolumny -- ułatwi to późniejsze operacje na danych.
+Każdy pomiar został uśredniony z 3 próbek wykonanych w równych odstępach co ok. 3,3 min. W ramach przygotowania danych, data i godzina pomiaru zostały rozdzielone na cztery oddzielne kolumny, zawierające miesiąc, dzień, godzinę i minutę pomiaru.
 \endgroup
 
 
 %\pagebreak
 \clearpage
 
+%\begingroup
+%\let\clearpage\relax
+%\chapter{Opis algorytmów}
+%
+%
+%TODO - ten chapter jest imo zawarty w 'konstrukcji i ocenie modeli'\\
+%ergo można usunąć, grafikę przenieść tam.\\
+%(chapter jest tutaj bo skopiowałem sprawko wstępne)\\
+%(grafika nie wiem czemu tutaj jest, tak wyszło)\\
+%
+%%\begin{figure}[H]%
+%%    \centering
+%%    \subfloat{{
+%%    	\includegraphics[page=1,
+%%				width=0.8\linewidth,
+%%				origin=c	
+%%		]{../Rplots.pdf}
+%%    }}%
+%%    %\caption{TODO caption}%
+%%    \label{FIG_1}%
+%%\end{figure}
+%
+%\endgroup
+
+
+
 \begingroup
 \let\clearpage\relax
-\chapter{Opis algorytmów}
-
-
-TODO - ten chapter jest imo zawarty w 'konstrukcji i ocenie modeli'\\
-ergo można usunąć, grafikę przenieść tam.\\
-(chapter jest tutaj bo skopiowałem sprawko wstępne)\\
-(grafika nie wiem czemu tutaj jest, tak wyszło)\\
-
-\begin{figure}[H]%
-    \centering
-    \subfloat{{
-    	\includegraphics[page=1,
-				width=0.8\linewidth,
-				origin=c	
-		]{../Rplots.pdf}
-    }}%
-    %\caption{TODO caption}%
-    \label{FIG_1}%
-\end{figure}
-
-\endgroup
-
-
-
-\begingroup
-\let\clearpage\relax
-\chapter{Selekcja atrybutów}
-
-TODO jakoś ładnie opisać, to co niżej raczej dla inspiracji\\
+\chapter{Selekcja atrybutów}\label{chap:selekcja}
 
 %TODO zajebane z elka.mine
-Algorytm randomForest pozwala uszeregować atrybuty na dwa sposoby:
+Aby zapobiec nadmiernemu dopasowaniu, stosuje się selekcję atrybutów, która wybiera kilka najważniejszych atrybutów do późniejszego stworzenia modeli. Po zastosowaniu selekcji, modele oparte o ograniczoną liczbę atrybutów zwykle są lepsze od opartych o wszystkie atrybuty. Istnieje wiele metod selekcji atrybutów; w ramach projektu zostało sprawdzone kilka metod (w nawiasach umieszczono opcję type funkcji \textit{feature\_selection}):
 \begin{itemize}
-\item[$\bullet$] przydatność atrybutu oceniania jest względem tego, jak bardzo model pogorszy się gdy tego atrybutu zabraknie,
-\item[$\bullet$] przydatność atrybutu określa zmniejszenie nieczystości po podziale w oparciu o ten atrybut.
+	\item[$\bullet$] prosty filtr statystyczny (\textit{,,simple''}) - pomiędzy każdym z atrybutów a celem regresji stosuje się miarę statystyczną, która określa zależność celu od danego atrybutu (dalej ,,miara zależności''). Następnie wybiera się kilka atrybutów o największej ,,mierze zależności''. W ramach regresji pomiędzy atrybutami ciągłymi zastosowano współczynnik korelacji (Pearsona);
+	\item[$\bullet$] bazująca na drzewach losowych (\textit{,,rf''}) - w tym celu wykorzystano pakiet randomForest i jego wbudowaną opcję zwracają parametr IMPORTANCE (bazujący na mierze MSE), o możliwości konfiguracji ilości drzew;
+	\item[$\bullet$] metoda RRELIEF (\textit{,,relief''}) - wersja algorytmu RELIEF do zastosowań w zadaniu regresji. Algorytm RELIEF, początkowo zaprojektowany dla zadania klasyfikacji binarnej, polega na losowym wybraniu obserwacji (jednego rekordu klasy+atrybuty). Następnie wyszukuje się \textit{k} najbardziej podobnych obserwacji tej samej klasy, oraz \textit{k} klasy przeciwnej. Dla każdego atrybutu oblicza się wagę istotności. Po wykonaniu \textit{trees\_num} operacji, wykonuje się średnią wag istotności. Atrybuty segreguje się według wag istotności. W zadaniu regresji stosuje się inne funkcje obliczające wagę np. funkcję rozkładu.
+	%\item[$\bullet$] metoda "wrapper" (\textit{,,wrapper''})- podejście zakładające, że nie istnieje jedyny najlepszy podzbiór atrybutów niezależny od zastosowanego modelu. W tym celu wybrano algorytm \textit{rpart} do wyboru najistotniejszych atrybutów.
 \end{itemize}
-Została wybrana pierwsza metoda ze względu na jej widoczny i bezpośredni związek z jakością całego modelu.
+	
+\par
+W ramach projektu stosuje się następujące podejście: dla każdej wymienionej metody wykonuje się selekcję połowy atrybutów (\textit{part=0.5}) atrybutów, następnie wyznaczoną formułę aplikuje się do stworzenia modelu \textit{rpart()}, i procedurze oceny (10-krotnej walidacji krzyżowej \textit{model\_eval()}). Następnie największy współczynnik korelacji Pearsona wyznacza najlepszą metodę selekcji atrybutów oraz formułę do stworzenia modelu.
 
 %TODO zajebane z twojego readme z gita
-Najprostszym, zadowalającym rozwiązaniem jest zastosowanie pakietu randomForest w celu wyznaczenia predykcyjnej przydatności atrybutów, a następnie wybór (może w kilku wariantach) pewnej liczby najlepszych atrybutów (np. najlepsze 25\%, 50\% itp.). W tym przypadku zalecałbym użycie miary "mean decrease accuracy", co wymaga użycia w wywołaniu funkcji randomForest argumentu importance=TRUE, zaś w wywołaniu funkcji importance lub varImpPlot argumentu type=1. Inne bardziej zautomatyzowane podejścia można znaleźć w kilku pakietach wymienionych tutaj: {\url{https://github.com/FrancisArgnR/R-FeatureSelection-Packages}}
+%Najprostszym, zadowalającym rozwiązaniem jest zastosowanie pakietu randomForest w celu wyznaczenia predykcyjnej przydatności atrybutów, a następnie wybór (może w kilku wariantach) pewnej liczby najlepszych atrybutów (np. najlepsze 25\%, 50\% itp.). W tym przypadku zalecałbym użycie miary "mean decrease accuracy", co wymaga użycia w wywołaniu funkcji randomForest argumentu importance=TRUE, zaś w wywołaniu funkcji importance lub varImpPlot argumentu type=1. Inne bardziej zautomatyzowane podejścia można znaleźć w kilku pakietach wymienionych tutaj: {\url{https://github.com/FrancisArgnR/R-FeatureSelection-Packages}}
 
 \section{Wyniki selekcji atrybutów}
-TODO jakaś tabelka albo co + ew wnioski\\
+
+Na Rys. .... przedstawiono wyniki każdej z selekcji. W Tabeli \ref{table:wynikiSelekcji} przedstawiono porównanie wyników każdej z selekcji. Wynika z tego, że atrybuty wyznaczone metodą ..... pozwalają na najlepsze tłumaczenie modelu. Dla porównania przedstawiono też wynik walidacji krzyżowej dla modelu opartego o wszystkie atrybuty. Wynika 
+
+\begin{table}[!h]  \centering
+\caption{Wyniki selekcji atrybutów - współczynniki korelacji}
+\begin{tabular} { c  c  c  c  c } \hline \hline
+    \textbf{Parametr} & \textbf{\textit{randomForest}} & \textbf{\textit{simple}} & \textbf{\textit{RELIEF}} & \textbf{bez selekcji}  \\ \hline
+    Appliances & 0,764 & 0,798 & 0,766 & 0,779 \\
+    lights & 0,764 & 0,798 & 0,766 & 0,779 \\
+    \hline \hline
+    
+\end{tabular}
+\label{table:wynikiSelekcji}
+\end{table}
 
 \endgroup
-
-
 
 \begingroup
 \let\clearpage\relax
@@ -241,14 +252,50 @@ błedu.
 %TODO pakiety R i parametry ~notatka z poprzedniego sprawka
 TODO - pakiety R, parametry (np kryteria stopu, etc)
 
-\section{Ocena modeli}
-TODO opisać że wybraliśmy np: \\
+\section{Miary jakości}\label{sect:ocenamodeli}
+Dla zbudowanych modeli oblicza się następujące miary jakości:
+\begin{enumerate}
+\item
 CC - współczynnik korelacji liniowej Pearsona\\
 \begin{gather*}
-	\frac{cov(P,A)}{var(P) \cdot var(A)}
+	CC =\frac{cov(P,A)}{var(P) \cdot var(A)}
 \end{gather*}
-
+\item
+MSE - błąd średniokwadratowy
+\begin{gather*}
+	MSE = \frac{(p_1-a_1)^2+...+(p_n-a_n)^2}{n}
+\end{gather*}
+\item
+RMSE - pierwiastek z błędu średniokwadratowego
+\begin{gather*}
+	RMSE = \sqrt{\frac{(p_1-a_1)^2+...+(p_n-a_n)^2}{n}}
+\end{gather*}
+\item
+MAE - średni błąd względny
+\begin{gather*}
+	MAE = \frac{|p_1-a_1|+...+|p_n-a_n|}{n}
+\end{gather*}
+\item
+RSE - względny błąd kwadratowy
+\begin{gather*}
+	RSE = \frac{(p_1-a_1)^2+...+(p_n-a_n)^2}{(a_1-\overline{a})^2+...+(a_n-\overline{a})^2}
+\end{gather*}
+\item
+RRSE - pierwiastek ze względnego błędu kwadratowego
+\begin{gather*}
+	RRSE = \sqrt{\frac{(p_1-a_1)^2+...+(p_n-a_n)^2}{(a_1-\overline{a})^2+...+(a_n-\overline{a})^2}}
+\end{gather*}
+\item
+RAE - błąd względny
+\begin{gather*}
+	RAE = \frac{|p_1-a_1|+...+|p_n-a_n|}{|a_1-\overline{a}|+...+|a_n-\overline{a}|}
+\end{gather*}
+\end{enumerate}
 TODO tutaj ładnie się wpasuje co po kolei w kodzie poszło
+
+\section{Procedury oceny}
+Aby móc ocenić model pod względem przydatności zastosowano metodę k-krotnej walidacji krzyżowej. Kod zawarto w funkcji \textit{model\_eval()}, która stanowi . Zbiór testowy jest dzielony losowo na k podzbiorów równej wielkości. W kolejnych iteracjach każdy ze zbiorów jest traktowany jako zbiór testowy, podczas gdy na reszcie danych buduje się model. Następnie modele są uśredniane i następuje predykcja. Po predykcji modelu na zbiorze testowym wyznacza się miary jakości opisane w \ref{sect:ocenamodeli}.      
+
 
 \endgroup
 
@@ -269,37 +316,5 @@ TODO\\
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %TODO nie wiem czy to potrzebne, ale daje objętość
-
-\lstset{language=R, 
-		basicstyle=\ttfamily\small,
-		frame=lines,
-		numbers=left,
-		numberstyle=\small\color{blue},
-		showtabs=true}
-		
-\pagebreak
-Plik: main.r
-\lstinputlisting{../R/main.r}
-\clearpage
-
-\pagebreak
-Plik: data{\_}org.R
-\lstinputlisting{../R/data_org.R}
-\clearpage
-
-\pagebreak
-Plik: feature{\_}selection.R
-\lstinputlisting{../R/feature_selection.R}
-\clearpage
-
-\pagebreak
-Plik: simple.filter.R
-\lstinputlisting{../R/simple.filter.R}
-\clearpage
-
-\pagebreak
-Plik: model{\_}eval.R
-\lstinputlisting{../R/model_eval.R}
-\clearpage
-
+%
 \end{document}
