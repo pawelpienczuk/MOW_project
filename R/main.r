@@ -57,7 +57,7 @@ for (k in 1:length(featSelTypes)){
 # with all attributes
 crossval.rpart <- model_eval(test_data = test_data,
                              fun = rpart,
-                             formula = as.formula(paste(target_t, "~.")),
+                             formula = paste(target_t, "~."),
                              args = list(method ="anova"),
                              crossval_number = 10
 )
