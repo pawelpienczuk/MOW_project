@@ -171,6 +171,7 @@ W ramach projektu stosuje się następujące podejście: dla każdej wymienionej
 \section{Wyniki selekcji atrybutów}
 
 Na rysunkach \ref{fig:rf_app} -- \ref{fig:relief_app} przedstawiono wyniki każdej z selekcji. Dla \textit{randomForest} i \textit{simple.filter} atrybut \textit{hours} dominuje nad pozostałymi. W tabeli \ref{table:wynikiSelekcji} przedstawiono porównanie wyników każdej z selekcji. Wynika z tego, że atrybuty wyznaczone funkcją \textit{simple.filter} pozwalają na najlepsze wyznaczenie modelu. Dla porównania przedstawiono też wynik walidacji krzyżowej dla modelu opartego o wszystkie atrybuty. Tylko selekcja atrybutów za pomocą \textit{simple.filter} pozwala na poprawę dla obecnych warunków testowych (dostępne dane, ilość selekcjonowanych argumentów, algorytm do walidacji krzyżowej). W związku z wynikami, atrybuty wyznaczono za pomocą prostego filtru statystycznego posłużą w dalszej konstrukcji modelów.
+
  \begin{figure}[!h]
     \centering \includegraphics[scale=0.4]{../rf_lights.png}
     \caption{Wyniki selekcji z wykorzystaniem pakietu \textit{randomForest}; cel: lights}
@@ -222,21 +223,25 @@ Na rysunkach \ref{fig:rf_app} -- \ref{fig:relief_app} przedstawiono wyniki każd
 
 \endgroup
 
+\clearpage
 \begingroup
 \let\clearpage\relax
 \chapter{Konstrukcja i ocena modeli}
 
 \section{Metody konstrukcji modeli}
-W pierwszym kroku dokonano modelowania za pomocą liniowej regresji. Realizuje ją algorytm \textit{lm()}. Argumentami algorytmu są tylko: formuła (cel+atrybuty) oraz zestaw danych w formie \textit{data.frame}. Algorytm na podstawie średniej lub mediany wyznacza współczynniki funkcji liniowej tj. współczynnik kierunkowy i wyraz wolny. Następnie od każdego atrybuty wyznacza wagę współczynniku kierunkowego oraz jeden wyraz wolny. Zaletą tego algorytmu jest jego prostota i szybkość działania, niewątpliwą wadą jest fakt, że większość procesów zachodzących w świecie nie da się opisać za pomocą liniowych zależności.
+W pierwszym kroku dokonano modelowania za pomocą liniowej regresji. Realizuje ją algorytm \textit{lm()}. Argumentami algorytmu są tylko: formuła (cel+atrybuty) oraz zestaw danych w formie \textit{data.frame}. Algorytm na podstawie średniej lub mediany wyznacza współczynniki funkcji liniowej tj. współczynnik kierunkowy i wyraz wolny. Następnie od każdego atrybuty wyznacza wagę współczynniku kierunkowego oraz jeden wyraz wolny. Zaletą tego algorytmu jest jego prostota i szybkość działania, zaś niewątpliwą wadą jest fakt, że większość procesów zachodzących w świecie nie da się opisać za pomocą liniowych zależności.
 \par 
 Następnie dokonano modelowania za pomocą drzew regresji (algorytm \textit{rpart()}). Funkcja buduje model rekurencyjnie dzieląc zbiór na mniejsze i wyznaczając dla nich średnią. Dla metody ,,anova'' dedykowanej do zadania regresji kryterium podziału wyznaczone jest na podstawie sum kwadratów dla danego węzła i dla jego potomnych. Algorytm może przyjąć także argumenty na minimalną liczbę podziałów \textit{minsplit} oraz maksymalną głębokość drzewa \textit{maxdepth} (czyli długość pomiędzy korzeniem a liśćmi).
 % https://cran.r-project.org/web/packages/rpart/vignettes/longintro.pdf
 \par
-Pojedyncze modele drzew regresji zazwyczaj cierpią z powodu wysokiej wariancji -- jedną z metod jej redukcji jest tzw. Bagging (\textbf{B}ootstrap \textbf{agg}regat\textbf{ing}). W ramach tej metody tworzonych jest pewna liczba zbiorów "bootstrapowych". Dla każdego z tych zbiorów tworzy się nieprzycięte drzewo regresji. Następnie uśrednia sie każdy z tych modeli, zmniejszając wariancję i redukując zbytnie dopasowanie. Bagging może zostać zrealizowany za pomocą pakietu \textit{ipred} lub \textit{caret}. Zasada działania modelowania przy pomocy tych pakietów jest podobna, pakiet \textit{caret} pozwala natomiast na łatwą analizę istotności atrybutów. Celem porównania wyników realizowanych przez oba algorytmy, zdecydowano się na użycie ich obu.
+Pojedyncze modele drzew regresji zazwyczaj cierpią z powodu wysokiej wariancji -- jedną z metod jej redukcji jest tzw. Bagging (\textbf{B}ootstrap \textbf{agg}regat\textbf{ing}). W ramach tej metody tworzona jest pewna liczba zbiorów "bootstrapowych". Dla każdego z tych zbiorów tworzy się nieprzycięte drzewo regresji. Następnie uśrednia się każdy z tych modeli, zmniejszając wariancję i redukując zbytnie dopasowanie. Bagging może zostać zrealizowany za pomocą pakietu \textit{ipred} lub \textit{caret}. Zasada działania modelowania przy pomocy tych pakietów jest podobna, pakiet \textit{caret} pozwala natomiast na łatwą analizę istotności atrybutów. Celem porównania wyników realizowanych przez oba algorytmy, zdecydowano się na użycie ich obu.
 \par
-Modele oparte o drzewo regresji cierpią z powodu faktu, że w liściach, które reprezentują pewny podzbiór przestrzeni (na której buduje się model), wynikiem jest pojedyncza liczba. Przykładowo dla zależności celu od jednego atrybutu można to funkcja reprezentująca model może być nieciągła i stworzona z odcinków o zerowym współczynniku kierunkowym. Dużo lepiej byłoby aproksymować tę zależność funkcją kawałkami liniową.  W tym celu wykorzystuje się regresję kawałkami liniową (\textit{grow.modtree} z pakietu \textit{dmr.regtree}). Za pomocą listy \textit{plr\_args} ograniczono głębokość drzewa do 10 oraz wymuszono co najmniej 2 podziały.
+Modele oparte o drzewo regresji cierpią z powodu faktu, że w liściach, które reprezentują pewny podzbiór przestrzeni (na której buduje się model), wynikiem jest pojedyncza liczba. Przykładowo dla zależności celu od jednego atrybutu, funkcja reprezentująca model może być nieciągła i stworzona z odcinków o zerowym współczynniku kierunkowym. Dużo lepiej byłoby aproksymować tę zależność funkcją kawałkami liniową.  W tym celu wykorzystuje się regresję kawałkami liniową (\textit{grow.modtree} z pakietu \textit{dmr.regtree}). Za pomocą listy \textit{plr\_args} ograniczono głębokość drzewa do 10 oraz wymuszono co najmniej 2 podziały.
 \par
 Modele opisane w tym podrozdziale zostały ocenione za pomocą procedury k-krotnej walidacji krzyżowej z wykorzystaniem miar jakości opisanych dalej. 
+
+\vspace*{\fill}
+\pagebreak
 
 \section{Miary jakości}\label{sect:ocenamodeli}
 Dla zbudowanych modeli oblicza się następujące miary jakości:
@@ -277,11 +282,12 @@ RAE - błąd względny
 	RAE = \frac{|p_1-a_1|+...+|p_n-a_n|}{|a_1-\overline{a}|+...+|a_n-\overline{a}|}
 \end{gather*}
 \end{enumerate}
-TODO tutaj ładnie się wpasuje co po kolei w kodzie poszło
 
 \section{Procedury oceny}\label{sect:proceduryOceny}
-Aby móc ocenić model pod względem przydatności zastosowano metodę k-krotnej walidacji krzyżowej. Kod zawarto w funkcji \textit{model\_eval()}, która stanowi . Zbiór testowy jest dzielony losowo na k podzbiorów równej wielkości. W kolejnych iteracjach każdy ze zbiorów jest traktowany jako zbiór testowy, podczas gdy na reszcie danych buduje się model. Następnie modele są uśredniane i następuje predykcja. Po predykcji modelu na zbiorze testowym wyznacza się miary jakości opisane w \ref{sect:ocenamodeli}.      
+Aby móc ocenić model pod względem przydatności zastosowano metodę k-krotnej walidacji krzyżowej. Kod zawarto w funkcji \textit{model\_eval()}.
+Zbiór testowy jest dzielony losowo na k podzbiorów równej wielkości. W kolejnych iteracjach każdy ze zbiorów jest traktowany jako zbiór testowy, podczas gdy na reszcie danych buduje się model. Następnie modele są uśredniane i następuje predykcja. Po predykcji modelu na zbiorze testowym wyznacza się miary jakości opisane w \ref{sect:ocenamodeli}.      
 
+\pagebreak
 \section{Wyniki walidacji krzyżowej}\label{sect:wyniki}
 Wyniki 10-krotnej walidacji krzyżowej zostały przedstawione w tabeli \ref{table:wynikiKCV}. Przedstawia ona miary jakości wyznaczone za pomocą tej procedury dla każdego algorytmu. Zauważa się przewagę metod \textit{bootstrapowych} nad innymi. Błędy i współczynniki korelacji dla tych metod osiągają najmniejsze wartości. Ewentualne różnice pomiędzy wynikami algorytmów z pakietów \textit{ipred} i \textit{caret} można tłumaczyć losowością procesu tworzenia ich modelu i/lub procedury oceny. Zauważa się też różnicę pomiędzy predykcją celu \textit{Appliances} a \textit{lights}. Wydaje się to byc zgodne z intuicją --- zwykle światła włącza się w dzień, a wyłącza w nocy. Z kolei różne urządzenia AGD stosuje się w różnych okresach, więc znalezienie szczególnej zależności może być skomplikowanym zadaniem.   
 
@@ -308,6 +314,8 @@ Wyniki 10-krotnej walidacji krzyżowej zostały przedstawione w tabeli \ref{tabl
 
 \endgroup
 
+%\clearpage
+%\pagebreak
 \begingroup
 \let\clearpage\relax
 \chapter{Wnioski}
