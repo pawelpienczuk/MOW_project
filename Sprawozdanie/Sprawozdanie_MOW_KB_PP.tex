@@ -57,12 +57,12 @@
 
 \widowpenalty=10000 % ostatni wierszrkapitu nie zostanie przeniesiony na następną stronę 
 \clubpenalty=10000 % pierwszy wiersz akapitu nie będzie kończył strony (nie używam tego ustawienia)
-\hbadness= 1450 %% zmniejsza liczę wyświetlanych ostrzeżeń (można zwiększyć, ale bez przesady)
+\hbadness= 1450 %% zmniejsza liczę wyświetlanych ostrzeżeń (można zwiększyć)
 \hfuzz = 0pt %% tekst może sterczeć ma marginesie na 1,5pt (ok. 0,5mm)
 
 \clubpenalty=10000 %nie pozostawia sierot
 \brokenpenalty=10000 %nie dzieli stron je»eli podziaª wyrazu
-\sloppy %zakaz wydªu»ania lini
+\sloppy %zakaz 
 
 %wcięcia 
 \setlength{\parindent}{1cm} 
@@ -105,7 +105,7 @@ Paweł Pieńczuk\par}
 \endgroup\clearpage}
 \end{titlepage} 
 
-\large %trochę cheat na objętość
+\large 
 
 \begingroup
 \let\clearpage\relax
@@ -320,7 +320,24 @@ Wyniki 10-krotnej walidacji krzyżowej zostały przedstawione w tabeli \ref{tabl
 \let\clearpage\relax
 \chapter{Wnioski}
 
-TODO\\
+Wykonano analizę danych dotyczących pomiarów oddzielnie dla zużycia energii przez sprzęty AGD oraz dla zużycia energii przez oświetlenie. Dokonano ograniczenia zbioru danych i wstępnej obróbki danych.
+\par
+Zrealizowano selekcję atrybutów. Modele \textit{rpart} oparte o wyselekcjonowane atrybuty okazały się nieznacznie lepsze (prosty filtr statystyczny oparty o współczynnik korelacji Pearsona) lub gorsze
+(randomForest, RELIEF). Jednak dzięki mniejszemu zbiorowi atrybutów użytych do zadania regresji zaoszczędzono na obliczeniach.
+\par
+Skonstruowano 5 różnych modeli: liniowy (\textit{lm()}), oparty o drzewo regresji(\textit{rpart}), dwa oparte o „bootstrapowane” drzewo regresji tzw. metoda Bagging (\textit{ipred}, \textit{caret}) oraz oparty o regresję kawałkami liniową (\textit{grow.modtree}). Poddano je k-krotnej walidacji krzyzowej. Najlepsze rezultaty osiągnięto dla metody Bagging. Na rysunkach \ref{fig:scatter_app} i \ref{fig:scatter_lights} przedstawiono przykład porównania wartości predykowanych i prawdziwych dla obu celów. Dla wybranych metod lepsze możliwości predykcji wykazuje cel \textit{lights}.
+
+\begin{figure}[!h]
+    \centering \includegraphics{../scatter_app.png}
+    \caption{Metoda: \textit{bagging (ipred)}; cel: \textit{Appliances}; czerwony --- predykowane, niebieski --- prawdziwe}
+    \label{fig:scatter_app}
+\end{figure}
+
+ \begin{figure}[!h]
+    \centering \includegraphics{../scatter_lights.png}
+    \caption{Metoda: \textit{bagging (ipred)}; cel: \textit{lights}; czerwony --- predykowane, niebieski --- prawdziwe}
+    \label{fig:scatter_lights}
+\end{figure}
 
 \endgroup
 
@@ -347,11 +364,6 @@ Plik: data{\_}org.R
 \pagebreak
 Plik: feature{\_}selection.R
 \lstinputlisting{../R/feature_selection.R}
-\clearpage
-
-\pagebreak
-Plik: simple.filter.R
-\lstinputlisting{../R/simple.filter.R}
 \clearpage
 
 \pagebreak

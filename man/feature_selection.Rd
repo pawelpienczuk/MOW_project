@@ -4,18 +4,29 @@
 \alias{feature_selection}
 \title{Feature Selection}
 \usage{
-feature_selection(test_data, type = "rf", part = 1, trees_num = 10)
+feature_selection(
+  formula_full,
+  target,
+  test_data,
+  type = "rf",
+  part = 1,
+  trees_num = 10
+)
 }
 \arguments{
-\item{test_data}{- data to perform feature ranking}
+\item{formula_full}{full formula, with targets and all attributes}
 
-\item{type}{- "rf" - randomForest IMPORTANCE-based ranking (MSE)(default),
-"bootstrap" - bootstraped R2-based (coef. of determination) ranking
-"simple" - simple filter based algorithms}
+\item{target}{target (character type)}
 
-\item{part}{- part of attributes returned by feature selection, 0 < part <=1 (default=0.5)}
+\item{test_data}{data to perform feature ranking}
 
-\item{trees_num}{- numbers of trees (randomForest) or bootstrap sets (bootstrap)}
+\item{type}{"rf" - randomForest IMPORTANCE-based ranking (default),
+"relief" - RELIEF algorithm 
+"simple" - simple filter algorithm}
+
+\item{part}{part of attributes returned by feature selection, 0 < part <=1 (default=0.5)}
+
+\item{trees_num}{numbers of trees (randomForest) or bootstrap sets (bootstrap)}
 }
 \value{
 formula with selected attributes

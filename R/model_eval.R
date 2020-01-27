@@ -20,7 +20,7 @@ model_eval <<- function(test_data,fun=rpart,formula,crossval_number=10,args=NULL
     stop()
   }
   if ( !is.character(formula)) {
-    message("Pass string into attr parameter")
+    message("Pass string into formula parameter")
     stop()
   }
   if (crossval_number<1){
